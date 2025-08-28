@@ -64,14 +64,14 @@ class ForgotPasswordScreen extends StatelessWidget {
                 prefixIcon: Icons.email_outlined,
               ),
               const SizedBox(height: 32),
-              PrimaryButton(
-                text: 'Send Email',
-                onPressed: () {
-                  authController.sendPasswordResetEmail();
-                  // After sending reset email, navigate to OTP screen
-                  Get.toNamed(Routes.OTP);
-                },
-              ),
+              Obx(() => PrimaryButton(
+                text: authController.isLoading.value ? 'Loading...' : 'Send Email',
+                onPressed: authController.isLoading.value
+                    ? (){}
+                    : () {
+                        authController.sendPasswordResetEmail();
+                      },
+              )),
             ],
           ),
         ),

@@ -93,25 +93,24 @@ class OTPScreen extends StatelessWidget {
                     'Resend code in : ',
                     style: TextStyle(color: AppColors.secondaryText, fontSize: 14),
                   ),
-                  Text(
-                    authController.timerText.value,
-                    style: TextStyle(
-                      color: AppColors.accentRed,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
+                  Obx(() => Text(
+                    '${authController.timerText.value.toString().padLeft(2, '0')}',
+                    style: const TextStyle(
+                        color: AppColors.lightGrey,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14),
+                  )),
                 ],
               ),
               const SizedBox(height: 32),
-              PrimaryButton(
-                text: 'Verify My Account',
-                onPressed: () {
-                  authController.verifyOTP(authController.otpCode.value);
-                  // After successful verification, navigate to reset password screen
-                  Get.toNamed(Routes.RESET_PASSWORD);
-                },
-              ),
+              Obx(() => PrimaryButton(
+                text: authController.isLoading.value ? 'Loading...' : 'Verify My Account',
+                onPressed: authController.isLoading.value
+                    ? (){}
+                    : () {
+                        authController.verifyOTP(authController.otpCode.value);
+                      },
+              )),
               const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

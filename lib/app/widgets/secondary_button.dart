@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:qr_code_inventory/app/utils/app_colors.dart';
 
-class PrimaryButton extends StatelessWidget {
+class SecondaryButton extends StatelessWidget {
+
   final String text;
   final VoidCallback onPressed;
 
-  const PrimaryButton({Key? key, required this.text, required this.onPressed})
-      : super(key: key);
+  const SecondaryButton({super.key, required this.text, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -14,16 +15,16 @@ class PrimaryButton extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: onPressed,
-        child: Text(text,
+        child:  Text(text,
             style: TextStyle(
                 fontSize: 18,
                 color: Colors.black87,
-                fontWeight: FontWeight.bold)),
-                
+                fontWeight: FontWeight.bold)), 
         style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.secondaryButtonColor,
+                   padding: EdgeInsets.symmetric(vertical: 10.h),
+
           shadowColor: Colors.transparent,
-          backgroundColor: Colors.yellow[600],
-          padding: EdgeInsets.symmetric(vertical: 10.h),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),

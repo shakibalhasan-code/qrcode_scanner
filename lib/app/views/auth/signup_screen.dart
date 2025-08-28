@@ -150,14 +150,14 @@ class CreateAccountScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 32),
-                PrimaryButton(
-                  text: 'Sign Up',
-                  onPressed: () {
-                    authController.createAccount();
-                    // If registration is successful, you might want to navigate to the login screen
-                    Get.toNamed(Routes.LOGIN);
-                  },
-                ),
+                Obx(() => PrimaryButton(
+                  text: authController.isLoading.value ? 'Loading...' : 'Sign Up',
+                  onPressed: authController.isLoading.value
+                      ? (){} // Provide an empty function when disabled
+                      : () {
+                          authController.createAccount();
+                        },
+                )),
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

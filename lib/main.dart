@@ -5,6 +5,8 @@ import 'package:qr_code_inventory/app/bindings/initial_binding.dart';
 import 'package:qr_code_inventory/app/utils/routes/app_pages.dart';
 
 void main() {
+  InitialBinding().dependencies();
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Flutter Auth UI',
+          title: 'Qr Code Inventory',
           theme: ThemeData(
             primarySwatch: Colors.blue,
             textTheme: Typography.englishLike2018.apply(

@@ -2,6 +2,8 @@ import 'dart:ui';
 
 class AppColors {
   static const Color primary = Color(0xFFFDCB00); // Yellow for the button
+  static const Color secondaryButtonColor = Color(0xFFEDEEE6); // Yellow for the button
+
   static const Color primaryText = Color(0xFF0D1F3C); // Dark blue for titles
   static const Color secondaryText = Color(0xFF8A94A4); // Grey for subtitles
   static const Color accent = Color(0xFFF24E4E); // Red for action text like "Forgot"

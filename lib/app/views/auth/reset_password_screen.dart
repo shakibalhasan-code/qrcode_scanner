@@ -86,14 +86,15 @@ class ResetPasswordScreen extends StatelessWidget {
                 },
               )),
               const SizedBox(height: 32),
-              PrimaryButton(
-                text: 'Reset Password',
-                onPressed: () {
-                  authController.resetPassword();
-                  // After successful password reset, navigate to the password changed screen
-                  Get.toNamed(Routes.PASSWORD_CHANGED);
-                },
-              ),
+              Obx(() => PrimaryButton(
+                text: authController.isLoading.value ? 'Loading...' : 'Reset Password',
+                onPressed: authController.isLoading.value
+                    ? (){}
+                    : () {
+                        authController.resetPassword();
+
+                      },
+              )),
             ],
           ),
         ),

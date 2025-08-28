@@ -4,8 +4,7 @@ import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/views/auth/changed_pass_view.dart';
 import 'package:qr_code_inventory/app/views/auth/otp_verify_screen.dart';
 import 'package:qr_code_inventory/app/views/auth/reset_password_screen.dart';
-
-
+import 'package:qr_code_inventory/app/views/main/initial_step/personalization_screen.dart';
 
 class AuthController extends GetxController {
   // Observable variables for reactive state management
@@ -21,11 +20,15 @@ class AuthController extends GetxController {
   final TextEditingController createEmailController = TextEditingController();
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  final TextEditingController createPasswordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
-  final TextEditingController forgotPasswordEmailController = TextEditingController();
+  final TextEditingController createPasswordController =
+      TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+  final TextEditingController forgotPasswordEmailController =
+      TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController confirmNewPasswordController = TextEditingController();
+  final TextEditingController confirmNewPasswordController =
+      TextEditingController();
 
   // OTP Timer
   Timer? _timer;
@@ -53,20 +56,17 @@ class AuthController extends GetxController {
     const oneSec = Duration(seconds: 1);
     _timer?.cancel(); // Cancel any existing timer
     _start.value = 120; // Reset timer
-    _timer = Timer.periodic(
-      oneSec,
-      (Timer timer) {
-        if (_start.value == 0) {
-          timer.cancel();
-        } else {
-          _start.value--;
-          int minutes = _start.value ~/ 60;
-          int seconds = _start.value % 60;
-          timerText.value =
-              '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
-        }
-      },
-    );
+    _timer = Timer.periodic(oneSec, (Timer timer) {
+      if (_start.value == 0) {
+        timer.cancel();
+      } else {
+        _start.value--;
+        int minutes = _start.value ~/ 60;
+        int seconds = _start.value % 60;
+        timerText.value =
+            '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      }
+    });
   }
 
   // Method to toggle password visibility
@@ -80,7 +80,7 @@ class AuthController extends GetxController {
       rememberMe.value = value;
     }
   }
-  
+
   // Method to toggle terms agreement
   void toggleTermsAgreement(bool? value) {
     if (value != null) {
@@ -96,7 +96,7 @@ class AuthController extends GetxController {
     print("Email: ${loginEmailController.text}");
     print("Password: ${loginPasswordController.text}");
     isLoading.value = false;
-    // On success: Get.offAll(() => HomeScreen());
+    Get.to(() => PersonalizationScreen());
   }
 
   Future<void> createAccount() async {

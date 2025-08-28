@@ -106,15 +106,15 @@ class LoginScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 32),
-                PrimaryButton(
-                  text: 'Login',
-                  onPressed: () {
-                    authController.login();
-                    // Add your login logic here
-                    // For now, just navigating to home or some other screen
-                    // You might need to add a home route in your app_routes.dart
-                  },
-                ),
+                Obx(() => PrimaryButton(
+                  text: authController.isLoading.value ? 'Loading...' : 'Login',
+                  onPressed: authController.isLoading.value
+                      ? (){} // Provide an empty function when disabled
+                      : () {
+                          authController.login();
+                          
+                        },
+                )),
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
