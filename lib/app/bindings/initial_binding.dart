@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/bindings/auth_binding.dart';
-import 'package:qr_code_inventory/app/views/main/initial_step/controller/initial_controller.dart';
+import 'package:qr_code_inventory/app/views/main/initial_step/controllers/initial_controller.dart';
 
 class InitialBinding implements Bindings {
   @override

@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_code_inventory/app/utils/app_colors.dart';
-import 'package:qr_code_inventory/app/views/main/initial_step/controller/initial_controller.dart';
+import 'package:qr_code_inventory/app/views/main/initial_step/controllers/initial_controller.dart';
 
 class PersonalizationStep2 extends StatelessWidget {
   PersonalizationStep2({super.key});
@@ -98,8 +98,6 @@ class PersonalizationStep2 extends StatelessWidget {
                       );
                     },
                   ),
-                    },
-                  ),
                 ),
               ],
             ),
@@ -123,7 +121,7 @@ class PersonalizationStep2 extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Select a date',
+          'What’s your date of birth?',
           style: TextStyle(
             fontSize: 20.sp,
             fontWeight: FontWeight.w500,

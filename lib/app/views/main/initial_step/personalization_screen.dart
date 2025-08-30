@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:qr_code_inventory/app/utils/app_colors.dart';
-import 'package:qr_code_inventory/app/views/main/initial_step/controller/initial_controller.dart';
+import 'package:qr_code_inventory/app/views/main/initial_step/controllers/initial_controller.dart';
+import 'package:qr_code_inventory/app/views/main/initial_step/product_selection_screen.dart';
 import 'package:qr_code_inventory/app/views/main/initial_step/widgets/personalization_step1.dart';
-import 'package:qr_code_inventory/app/widgets/custom_textfeild.dart';
+import 'package:qr_code_inventory/app/views/main/initial_step/widgets/personalization_step2.dart';
 import 'package:qr_code_inventory/app/widgets/primary_button.dart';
 import 'package:qr_code_inventory/app/widgets/secondary_button.dart';
 
 class PersonalizationScreen extends StatelessWidget {
   PersonalizationScreen({super.key});
   final controller = Get.find<InitialController>();
+
+  // Method to build the current step widget based on the step index
+  Widget _buildCurrentStep(int stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return const PersonalizationStep1();
+      case 1:
+        return PersonalizationStep2();
+
+      default:
+        return const PersonalizationStep1(); // Default to first step
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,38 +55,45 @@ class PersonalizationScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      controller.stepsSections[controller.currentStep.value],
+                      // Dynamically show the appropriate step based on currentStep
+                      _buildCurrentStep(controller.currentStep.value),
                       SizedBox(height: 15.h),
                       Row(
                         children: [
                           Expanded(
                             child: PrimaryButton(
                               text:
-                                  'Continue ${controller.currentStep.value + 1}/${controller.stepsSections.length}',
-                              onPressed: () {
-                                if (controller.currentStep.value <
-                                    controller.stepsSections.length - 1) {
-                                  controller.nextSection();
-                                } else {}
-                              },
+                                  'Continue ${controller.currentStep.value + 1}/${controller.totalSteps.value}',
+                              onPressed: controller.nextSection,
                             ),
                           ),
                           SizedBox(width: 10.w),
                           Expanded(
                             child: SecondaryButton(
                               text: 'Skip',
-                              onPressed: () {},
+                              onPressed: () {
+                                Get.to(ProductSelectionScreen());
+                              },
                             ),
                           ),
                         ],
                       ),
                       SizedBox(height: 5.h),
-                      controller.currentStep.value > 0 ? TextButton(
-                        onPressed: () {
-                          controller.previousSection();
-                        },
-                        child: Text('Go to the previous', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w400, color: Colors.grey)),
-                      ) : SizedBox(),
+                      controller.currentStep.value > 0
+                          ? TextButton(
+                              onPressed: () {
+                                controller.previousSection();
+                              },
+                              child: Text(
+                                'Go to the previous',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            )
+                          : SizedBox(),
                     ],
                   );
                 }),

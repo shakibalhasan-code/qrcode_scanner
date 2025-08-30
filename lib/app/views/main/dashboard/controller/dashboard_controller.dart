@@ -5,6 +5,7 @@ class DashboardController extends GetxController {
   
   var tabViews = [
 
+    
   ].obs;
 
 
