@@ -6,6 +6,8 @@ import 'package:qr_code_inventory/app/views/auth/otp_verify_screen.dart';
 import 'package:qr_code_inventory/app/views/auth/reset_password_screen.dart';
 import 'package:qr_code_inventory/app/views/auth/signin_screen.dart';
 import 'package:qr_code_inventory/app/views/auth/signup_screen.dart';
+import 'package:qr_code_inventory/app/views/main/dashboard/view/dashboard_view.dart';
+import 'package:qr_code_inventory/app/views/main/dashboard/bindings/dashboard_binding.dart';
 
 
 part 'app_routes.dart';
@@ -45,6 +47,11 @@ class AppPages {
       name: _Paths.PASSWORD_CHANGED,
       page: () => PasswordChangedScreen(),
       binding: AuthBinding(),
+    ),
+    GetPage(
+      name: _Paths.DASHBOARD,
+      page: () => DashboardView(),
+      binding: DashboardBinding(),
     ),
   ];
 }

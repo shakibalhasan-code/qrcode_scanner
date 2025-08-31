@@ -4,10 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qr_code_inventory/app/bindings/initial_binding.dart';
 import 'package:qr_code_inventory/app/utils/routes/app_pages.dart';
 
-void main() {
-  InitialBinding().dependencies();
+void main() async {
+  // Ensure Flutter is initialized before anything else
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  // Then initialize dependencies
+  InitialBinding().dependencies();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

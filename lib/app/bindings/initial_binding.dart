@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/bindings/auth_binding.dart';
+import 'package:qr_code_inventory/app/views/main/dashboard/controller/dashboard_controller.dart';
 import 'package:qr_code_inventory/app/views/main/initial_step/controllers/initial_controller.dart';
 
 class InitialBinding implements Bindings {
@@ -8,6 +9,8 @@ class InitialBinding implements Bindings {
     // Initialize all bindings here
     AuthBinding().dependencies();
     Get.lazyPut(()=> InitialController());
+    Get.lazyPut(()=> DashboardController());
+
 
     // Add other bindings as your app grows
     // Example: HomeBinding().dependencies();
