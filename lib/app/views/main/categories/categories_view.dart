@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/views/main/categories/controller/categories_controller.dart';
+import 'package:qr_code_inventory/app/views/main/product_details/product_details_view.dart';
 
 class CategoriesView extends StatelessWidget {
   const CategoriesView({super.key});
@@ -77,46 +78,49 @@ class CategoriesView extends StatelessWidget {
                                 margin: EdgeInsets.all(8.w),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(12.r),
-                                  child: Image.network(
-                                    product.image,
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    loadingBuilder: (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Container(
-                                        color: Colors.grey[200],
-                                        child: Center(
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2.w,
-                                            color: Colors.grey[400],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                        color: Colors.grey[200],
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.image_not_supported,
-                                              size: 32.w,
+                                  child: Hero(
+                                    tag: product.id,
+                                    child: Image.network(
+                                      product.image,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      loadingBuilder: (context, child, loadingProgress) {
+                                        if (loadingProgress == null) return child;
+                                        return Container(
+                                          color: Colors.grey[200],
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2.w,
                                               color: Colors.grey[400],
                                             ),
-                                            SizedBox(height: 4.h),
-                                            Text(
-                                              'Image not found',
-                                              style: TextStyle(
-                                                fontSize: 10.sp,
-                                                color: Colors.grey[500],
+                                          ),
+                                        );
+                                      },
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Container(
+                                          color: Colors.grey[200],
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.image_not_supported,
+                                                size: 32.w,
+                                                color: Colors.grey[400],
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
+                                              SizedBox(height: 4.h),
+                                              Text(
+                                                'Image not found',
+                                                style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  color: Colors.grey[500],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
                               ),

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/core/models/product_model.dart';
+import 'package:qr_code_inventory/app/views/main/product_details/product_details_view.dart';
 
 class CategoriesController extends GetxController {
   final allProducts = <Product>[
@@ -62,10 +63,11 @@ class CategoriesController extends GetxController {
   ].obs;
 
   void onProductTap(Product product) {
-    Get.snackbar(
-      'Product Selected',
-      product.name,
-      duration: const Duration(seconds: 1),
+    Get.to(
+      () => const ProductDetailsView(),
+      arguments: product,
+      transition: Transition.rightToLeft,
+      duration: const Duration(milliseconds: 300),
     );
   }
 
