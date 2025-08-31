@@ -1,11 +1,9 @@
 import 'package:get/get.dart';
-import 'package:qr_code_inventory/app/views/main/dashboard/controller/dashboard_controller.dart';
 import 'package:qr_code_inventory/app/views/main/home/controller/home_controller.dart';
 
-class DashboardBinding implements Bindings {
+class HomeBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<DashboardController>(() => DashboardController());
     Get.lazyPut<HomeController>(() => HomeController());
   }
 }

@@ -16,44 +16,44 @@ class PersonalizationController extends GetxController {
   // A reactive list of products. '.obs' makes it observable.
   final RxList<Product> products = <Product>[
     Product(
+      id: '1',
       name: 'Mug',
-      imageUrl:
-          'https://www.bootsphoto.com/cdn/images/t2/fb/T2FBamRuMFZrOWRocWtZRG4yRmVEZVpsSTdRV25qK0dON3czeG1ta1FzcHB2UGlNYWNzR09SYUhScW5MQlNwWnhuaVV3V3A4aXIvZlNBRXduOFU2VTFxSklmOHB1ZCt4L3B0bm5GZjlBREU9.jpg',
+      image: 'https://www.bootsphoto.com/cdn/images/t2/fb/T2FBamRuMFZrOWRocWtZRG4yRmVEZVpsSTdRV25qK0dON3czeG1ta1FzcHB2UGlNYWNzR09SYUhScW5MQlNwWnhuaVV3V3A4aXIvZlNBRXduOFU2VTFxSklmOHB1ZCt4L3B0bm5GZjlBREU9.jpg',
     ),
     Product(
+      id: '2',
       name: 'Hat',
-      imageUrl:
-          'https://images.unsplash.com/photo-1529958030586-3aae4ca485ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8aGF0fHx8fHx8MTcyNDA5MzYxMg&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080',
+      image: 'https://images.unsplash.com/photo-1529958030586-3aae4ca485ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8aGF0fHx8fHx8MTcyNDA5MzYxMg&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080',
     ),
     Product(
+      id: '3',
       name: 'Bag',
-      imageUrl:
-          'https://img.freepik.com/free-psd/ladies-purse-3d-rendering-isometric-icon_47987-9664.jpg',
+      image: 'https://img.freepik.com/free-psd/ladies-purse-3d-rendering-isometric-icon_47987-9664.jpg',
     ),
     Product(
+      id: '4',
       name: 'Keychains',
-      imageUrl:
-          'https://img.drz.lazcdn.com/static/bd/p/960bb809ba8e55e7f98971a742723762.jpg_720x720q80.jpg',
+      image: 'https://img.drz.lazcdn.com/static/bd/p/960bb809ba8e55e7f98971a742723762.jpg_720x720q80.jpg',
     ),
     Product(
-      name: 'Mug',
-      imageUrl:
-          'https://www.bootsphoto.com/cdn/images/t2/fb/T2FBamRuMFZrOWRocWtZRG4yRmVEZVpsSTdRV25qK0dON3czeG1ta1FzcHB2UGlNYWNzR09SYUhScW5MQlNwWnhuaVV3V3A4aXIvZlNBRXduOFU2VTFxSklmOHB1ZCt4L3B0bm5GZjlBREU9.jpg',
+      id: '5',
+      name: 'Coffee Mug',
+      image: 'https://www.bootsphoto.com/cdn/images/t2/fb/T2FBamRuMFZrOWRocWtZRG4yRmVEZVpsSTdRV25qK0dON3czeG1ta1FzcHB2UGlNYWNzR09SYUhScW5MQlNwWnhuaVV3V3A4aXIvZlNBRXduOFU2VTFxSklmOHB1ZCt4L3B0bm5GZjlBREU9.jpg',
     ),
     Product(
-      name: 'Hat',
-      imageUrl:
-          'https://images.unsplash.com/photo-1529958030586-3aae4ca485ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8aGF0fHx8fHx8MTcyNDA5MzYxMg&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080',
+      id: '6',
+      name: 'Summer Hat',
+      image: 'https://images.unsplash.com/photo-1529958030586-3aae4ca485ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8aGF0fHx8fHx8MTcyNDA5MzYxMg&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080',
     ),
     Product(
-      name: 'Bag',
-      imageUrl:
-          'https://img.freepik.com/free-psd/ladies-purse-3d-rendering-isometric-icon_47987-9664.jpg',
+      id: '7',
+      name: 'Leather Bag',
+      image: 'https://img.freepik.com/free-psd/ladies-purse-3d-rendering-isometric-icon_47987-9664.jpg',
     ),
     Product(
-      name: 'Keychains',
-      imageUrl:
-          'https://img.drz.lazcdn.com/static/bd/p/960bb809ba8e55e7f98971a742723762.jpg_720x720q80.jpg',
+      id: '8',
+      name: 'Smart Keychains',
+      image: 'https://img.drz.lazcdn.com/static/bd/p/960bb809ba8e55e7f98971a742723762.jpg_720x720q80.jpg',
     ),
   ].obs;
 

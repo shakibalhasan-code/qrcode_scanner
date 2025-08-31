@@ -150,7 +150,7 @@ class ProductGridItem extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: CachedNetworkImage(
-                    imageUrl: product.imageUrl,
+                    imageUrl: product.image,
                     fit: BoxFit.cover,
                     width: double.infinity,
                     height: double.infinity,

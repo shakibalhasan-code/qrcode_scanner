@@ -6,6 +6,10 @@ class AppColors {
 
   static const Color primaryText = Color(0xFF0D1F3C); // Dark blue for titles
   static const Color secondaryText = Color(0xFF8A94A4); // Grey for subtitles
+  static const Color greyText = Color(0xFF9AA4B2); // Dark blue for titles
+
+  
+  
   static const Color accent = Color(0xFFF24E4E); // Red for action text like "Forgot"
   static const Color textFieldBackground = Color(0xFFF7F8F9);
   static const Color textFieldBorder = Color(0xFFE8ECF4);
