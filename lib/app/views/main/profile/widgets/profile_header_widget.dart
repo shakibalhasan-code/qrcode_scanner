@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qr_code_inventory/app/utils/app_colors.dart';
@@ -7,6 +8,7 @@ class ProfileHeaderWidget extends StatelessWidget {
   final String userEmail;
   final String userPhone;
   final String? avatarUrl;
+  final File? selectedImage;
   final VoidCallback? onEditProfile;
 
   const ProfileHeaderWidget({
@@ -15,6 +17,7 @@ class ProfileHeaderWidget extends StatelessWidget {
     required this.userEmail,
     required this.userPhone,
     this.avatarUrl,
+    this.selectedImage,
     this.onEditProfile,
   });
 
@@ -39,15 +42,22 @@ class ProfileHeaderWidget extends StatelessWidget {
                   ),
                 ),
                 child: ClipOval(
-                  child: avatarUrl != null && avatarUrl!.isNotEmpty
-                    ? Image.network(
-                        avatarUrl!,
+                  child: selectedImage != null
+                    ? Image.file(
+                        selectedImage!,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return _buildPlaceholderAvatar();
-                        },
+                        width: 100.w,
+                        height: 100.w,
                       )
-                    : _buildPlaceholderAvatar(),
+                    : avatarUrl != null && avatarUrl!.isNotEmpty
+                      ? Image.network(
+                          avatarUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return _buildPlaceholderAvatar();
+                          },
+                        )
+                      : _buildPlaceholderAvatar(),
                 ),
               ),
               

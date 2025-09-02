@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:qr_code_inventory/app/core/services/image_picker_service.dart';
 import 'package:qr_code_inventory/app/views/auth/signin_screen.dart';
 import 'package:qr_code_inventory/app/views/main/profile/edit_profile_screen.dart';
 import 'package:qr_code_inventory/app/views/main/favourite/favourite_view.dart';
@@ -13,6 +15,10 @@ class ProfileController extends GetxController {
   final userEmail = 'alexander.putra@email.com'.obs;
   final userPhone = '+1 234 567 8900'.obs;
   final userAvatar = ''.obs; // Can be empty for placeholder
+  final selectedProfileImage = Rxn<File>(); // For storing selected image
+
+  // Loading states
+  final isUpdatingProfile = false.obs;
 
   // Profile menu items
   final List<ProfileMenuItem> profileMenuItems = [
@@ -64,6 +70,56 @@ class ProfileController extends GetxController {
 
   void onEditProfile() {
     Get.to(() => const EditProfileScreen());
+  }
+
+  void onChangeProfileImage() {
+    ImagePickerService.showImagePickerBottomSheet(
+      onImageSelected: (File? image) {
+        if (image != null) {
+          selectedProfileImage.value = image;
+          Get.snackbar(
+            'Success',
+            'Profile photo updated successfully',
+            backgroundColor: Colors.green.withOpacity(0.1),
+            colorText: Colors.green,
+            duration: const Duration(seconds: 2),
+          );
+        } else {
+          // Remove current image
+          selectedProfileImage.value = null;
+          Get.snackbar(
+            'Removed',
+            'Profile photo removed',
+            duration: const Duration(seconds: 2),
+          );
+        }
+      },
+    );
+  }
+
+  void updateUserInfo({
+    String? name,
+    String? email,
+    String? phone,
+  }) {
+    isUpdatingProfile.value = true;
+    
+    // Simulate API call delay
+    Future.delayed(const Duration(seconds: 1), () {
+      if (name != null) userName.value = name;
+      if (email != null) userEmail.value = email;
+      if (phone != null) userPhone.value = phone;
+      
+      isUpdatingProfile.value = false;
+      
+      Get.snackbar(
+        'Success',
+        'Profile updated successfully',
+        backgroundColor: Colors.green.withOpacity(0.1),
+        colorText: Colors.green,
+        duration: const Duration(seconds: 2),
+      );
+    });
   }
 
   void onNotificationSettings() {

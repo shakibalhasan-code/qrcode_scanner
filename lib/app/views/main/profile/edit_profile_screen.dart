@@ -4,15 +4,17 @@ import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/utils/app_colors.dart';
 import 'package:qr_code_inventory/app/widgets/custom_textfeild.dart';
 import 'package:qr_code_inventory/app/widgets/primary_button.dart';
+import 'package:qr_code_inventory/app/views/main/profile/controller/profile_controller.dart';
 
 class EditProfileScreen extends StatelessWidget {
   const EditProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final nameController = TextEditingController(text: 'Alexander Putra');
-    final emailController = TextEditingController(text: 'alexander.putra@email.com');
-    final phoneController = TextEditingController(text: '+1 234 567 8900');
+    final controller = Get.find<ProfileController>();
+    final nameController = TextEditingController(text: controller.userName.value);
+    final emailController = TextEditingController(text: controller.userEmail.value);
+    final phoneController = TextEditingController(text: controller.userPhone.value);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -52,7 +54,7 @@ class EditProfileScreen extends StatelessWidget {
             
             // Profile Avatar Section
             Center(
-              child: Stack(
+              child: Obx(() => Stack(
                 children: [
                   Container(
                     width: 120.w,
@@ -66,11 +68,18 @@ class EditProfileScreen extends StatelessWidget {
                       ),
                     ),
                     child: ClipOval(
-                      child: Icon(
-                        Icons.person,
-                        size: 60.w,
-                        color: Colors.white,
-                      ),
+                      child: controller.selectedProfileImage.value != null
+                          ? Image.file(
+                              controller.selectedProfileImage.value!,
+                              fit: BoxFit.cover,
+                              width: 120.w,
+                              height: 120.w,
+                            )
+                          : Icon(
+                              Icons.person,
+                              size: 60.w,
+                              color: Colors.white,
+                            ),
                     ),
                   ),
                   
@@ -78,13 +87,7 @@ class EditProfileScreen extends StatelessWidget {
                     bottom: 0,
                     right: 0,
                     child: GestureDetector(
-                      onTap: () {
-                        Get.snackbar(
-                          'Change Photo',
-                          'Photo selection functionality',
-                          duration: const Duration(seconds: 2),
-                        );
-                      },
+                      onTap: controller.onChangeProfileImage,
                       child: Container(
                         width: 36.w,
                         height: 36.w,
@@ -105,7 +108,7 @@ class EditProfileScreen extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
+              )),
             ),
             
             SizedBox(height: 40.h),
@@ -139,20 +142,19 @@ class EditProfileScreen extends StatelessWidget {
             SizedBox(height: 40.h),
             
             // Save Button
-            PrimaryButton(
-              text: 'Save Changes',
+            Obx(() => PrimaryButton(
+              text: controller.isUpdatingProfile.value ? 'Saving...' : 'Save Changes',
               onPressed: () {
-                Get.snackbar(
-                  'Profile Updated',
-                  'Your profile has been updated successfully',
-                  duration: const Duration(seconds: 2),
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: Colors.green.withOpacity(0.1),
-                  colorText: Colors.green,
-                );
-                Get.back();
+                if (!controller.isUpdatingProfile.value) {
+                  controller.updateUserInfo(
+                    name: nameController.text.trim(),
+                    email: emailController.text.trim(),
+                    phone: phoneController.text.trim(),
+                  );
+                  Get.back();
+                }
               },
-            ),
+            )),
             
             SizedBox(height: 20.h),
           ],

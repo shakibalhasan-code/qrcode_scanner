@@ -30,6 +30,7 @@ class ProfileView extends StatelessWidget {
                   userEmail: controller.userEmail.value,
                   userPhone: controller.userPhone.value,
                   avatarUrl: controller.userAvatar.value,
+                  selectedImage: controller.selectedProfileImage.value,
                   onEditProfile: controller.onEditProfile,
                 )),
               ),
