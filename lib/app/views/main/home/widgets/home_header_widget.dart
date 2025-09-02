@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/utils/app_colors.dart';
+import 'package:qr_code_inventory/app/views/main/cart/cart_view.dart';
 
 class HomeHeaderWidget extends StatelessWidget {
   final String greeting;
@@ -56,11 +58,14 @@ class HomeHeaderWidget extends StatelessWidget {
           ),
           
           // Shopping Cart Icon
-          Icon(
+          GestureDetector(
+            onTap: () => Get.to(() => const CartView()),
+            child: Icon(
               Icons.shopping_cart_outlined,
               size: 24.w,
               color: AppColors.primaryText,
             ),
+          ),
         ],
       ),
     );

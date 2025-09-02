@@ -100,7 +100,10 @@ class HomeSpecialProductsWidget extends StatelessWidget {
                                 borderRadius: BorderRadius.vertical(
                                   top: Radius.circular(12.r),
                                 ),
-                                child: _buildProductImage(product.image),
+                                child: Hero(
+                                  tag: product.id,
+                                  child: _buildProductImage(product.image),
+                                ),
                               ),
                             ),
                             Positioned(

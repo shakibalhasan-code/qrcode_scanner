@@ -1,30 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:qr_code_inventory/app/utils/app_colors.dart';
 import 'package:qr_code_inventory/app/views/main/home/controller/home_controller.dart';
-import 'package:qr_code_inventory/app/views/main/home/widgets/home_search_widget.dart';
-import 'package:qr_code_inventory/app/views/main/home/widgets/home_special_products_widget.dart';
+import 'package:qr_code_inventory/app/views/main/home/widgets/home_special_products_widget.dart'
+    show HomeSpecialProductsWidget;
 
-class FavouriteView extends StatelessWidget {
-  const FavouriteView({super.key});
+class SpecialProductScreen extends StatelessWidget {
+  const SpecialProductScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Favourites'),
-        backgroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: () => Get.back(),
+          icon: Icon(Icons.arrow_back_ios_new),
+        ),
+        title: Text('Special For You'),
       ),
-      body:  Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            // Search Section
-            HomeSearchWidget(),
-            Padding(
+      body: // Products Grid
+      Padding(
         padding: const EdgeInsets.all(8.0),
         child: GetBuilder<HomeController>(
           builder: (controller) {
@@ -174,13 +172,10 @@ class FavouriteView extends StatelessWidget {
           },
         ),
       ),
-             
-          ],
-        ),
-      ),
     );
   }
 
+  
   // Helper method to build product image with proper error handling
   Widget _buildProductImage(String imageUrl) {
     // Check if it's a network URL or asset path
@@ -226,5 +221,4 @@ class FavouriteView extends StatelessWidget {
       );
     }
   }
-  
 }

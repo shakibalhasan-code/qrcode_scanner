@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/core/models/product_model.dart';
+import 'package:qr_code_inventory/app/views/main/cart/cart_view.dart';
 
 class ProductDetailsController extends GetxController {
   late Product product;
@@ -32,11 +34,7 @@ class ProductDetailsController extends GetxController {
   }
   
   void addToCart() {
-    Get.snackbar(
-      'Added to Cart',
-      '${product.name} added to cart',
-      duration: const Duration(seconds: 2),
-    );
+    Get.to(() => const CartView());
   }
   
   void onBackPressed() {

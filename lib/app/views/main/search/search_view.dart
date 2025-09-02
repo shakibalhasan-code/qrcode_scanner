@@ -91,9 +91,12 @@ class SearchView extends StatelessWidget {
                           Expanded(
                             child: ClipRRect(
                               borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                              child: product.image.startsWith('http')
-                                  ? Image.network(product.image, fit: BoxFit.cover, width: double.infinity, height: double.infinity)
-                                  : Image.asset(product.image, fit: BoxFit.cover, width: double.infinity, height: double.infinity),
+                              child: Hero(
+                                tag: product.id,
+                                child: product.image.startsWith('http')
+                                    ? Image.network(product.image, fit: BoxFit.cover, width: double.infinity, height: double.infinity)
+                                    : Image.asset(product.image, fit: BoxFit.cover, width: double.infinity, height: double.infinity),
+                              ),
                             ),
                           ),
                           Padding(

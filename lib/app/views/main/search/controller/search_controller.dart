@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/core/models/product_model.dart';
-import 'package:qr_code_inventory/app/core/utils/app_images.dart'; 
+import 'package:qr_code_inventory/app/core/utils/app_images.dart';
+import 'package:qr_code_inventory/app/views/main/product_details/product_details_view.dart'; 
 
 class ProductSearchController extends GetxController {
   final searchController = TextEditingController();
@@ -87,7 +88,12 @@ class ProductSearchController extends GetxController {
   }
 
   void onProductTap(Product product) {
-    Get.snackbar('Product Tapped', 'You tapped on ${product.name}');
+    Get.to(
+      () => const ProductDetailsView(),
+      arguments: product,
+      transition: Transition.rightToLeft,
+      duration: const Duration(milliseconds: 300),
+    );
   }
 
   void toggleCategorySelection(String category) {
