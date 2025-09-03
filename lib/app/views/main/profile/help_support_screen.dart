@@ -291,17 +291,17 @@ class HelpSupportScreen extends StatelessWidget {
   }
 
   void _launchPhone(String phoneNumber) async {
-    final Uri phoneUri = Uri(scheme: 'tel', path: phoneNumber);
-    if (await canLaunchUrl(phoneUri)) {
-      await launchUrl(phoneUri);
-    }
+    // final Uri phoneUri = Uri(scheme: 'tel', path: phoneNumber);
+    // if (await canLaunchUrl(phoneUri)) {
+    //   await launchUrl(phoneUri);
+    // }
   }
 
   void _launchWhatsApp(String phoneNumber) async {
-    final Uri whatsappUri = Uri.parse('https://wa.me/$phoneNumber');
-    if (await canLaunchUrl(whatsappUri)) {
-      await launchUrl(whatsappUri);
-    }
+    // final Uri whatsappUri = Uri.parse('https://wa.me/$phoneNumber');
+    // if (await canLaunchUrl(whatsappUri)) {
+    //   await launchUrl(whatsappUri);
+    // }
   }
 
   void _launchWebsite(String url) async {
