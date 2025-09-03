@@ -8,7 +8,9 @@ import 'package:qr_code_inventory/app/views/main/favourite/favourite_view.dart';
 import 'package:qr_code_inventory/app/views/main/notifications/notifications_view.dart';
 import 'package:qr_code_inventory/app/views/main/profile/privacy_policy_screen.dart';
 import 'package:qr_code_inventory/app/views/main/profile/terms_conditions_screen.dart';
-  
+import 'package:qr_code_inventory/app/views/main/profile/help_support_screen.dart';
+import 'package:qr_code_inventory/app/views/main/profile/faq_screen.dart';
+
 class ProfileController extends GetxController {
   // User information
   final userName = 'Alexander Putra'.obs;
@@ -50,6 +52,18 @@ class ProfileController extends GetxController {
       icon: Icons.article_outlined,
       title: 'Terms & Conditions',
       subtitle: 'Terms of service',
+      onTap: null,
+    ),
+    ProfileMenuItem(
+      icon: Icons.help_outline,
+      title: 'Help & Support',
+      subtitle: 'Contact support team',
+      onTap: null,
+    ),
+    ProfileMenuItem(
+      icon: Icons.quiz_outlined,
+      title: 'FAQ',
+      subtitle: 'Frequently asked questions',
       onTap: null,
     ),
     ProfileMenuItem(
@@ -138,6 +152,14 @@ class ProfileController extends GetxController {
     Get.to(() => const TermsConditionsScreen());
   }
 
+  void onHelpSupport() {
+    Get.to(() => const HelpSupportScreen());
+  }
+
+  void onFAQ() {
+    Get.to(() => const FAQScreen());
+  }
+
   void onDeleteAccount() {
     Get.dialog(
       AlertDialog(
@@ -223,8 +245,10 @@ class ProfileController extends GetxController {
     profileMenuItems[2] = profileMenuItems[2].copyWith(onTap: onWishlist);
     profileMenuItems[3] = profileMenuItems[3].copyWith(onTap: onPrivacyPolicy);
     profileMenuItems[4] = profileMenuItems[4].copyWith(onTap: onTermsAndConditions);
-    profileMenuItems[5] = profileMenuItems[5].copyWith(onTap: onDeleteAccount);
-    profileMenuItems[6] = profileMenuItems[6].copyWith(onTap: onLogout);
+    profileMenuItems[5] = profileMenuItems[5].copyWith(onTap: onHelpSupport);
+    profileMenuItems[6] = profileMenuItems[6].copyWith(onTap: onFAQ);
+    profileMenuItems[7] = profileMenuItems[7].copyWith(onTap: onDeleteAccount);
+    profileMenuItems[8] = profileMenuItems[8].copyWith(onTap: onLogout);
   }
 }
 
