@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:qr_code_inventory/app/utils/app_colors.dart';
 
 class CartBottomSection extends StatelessWidget {
   final double totalAmount;
@@ -67,7 +66,7 @@ class CartBottomSection extends StatelessWidget {
                 onPressed: hasSelectedItems ? onCheckout : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: hasSelectedItems 
-                    ? AppColors.primary 
+                    ? const Color(0xFFFDCB00)
                     : Colors.grey[300],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25.r),

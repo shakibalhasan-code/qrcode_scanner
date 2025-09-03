@@ -8,7 +8,7 @@ import 'package:qr_code_inventory/app/views/main/favourite/favourite_view.dart';
 import 'package:qr_code_inventory/app/views/main/notifications/notifications_view.dart';
 import 'package:qr_code_inventory/app/views/main/profile/privacy_policy_screen.dart';
 import 'package:qr_code_inventory/app/views/main/profile/terms_conditions_screen.dart';
-
+  
 class ProfileController extends GetxController {
   // User information
   final userName = 'Alexander Putra'.obs;

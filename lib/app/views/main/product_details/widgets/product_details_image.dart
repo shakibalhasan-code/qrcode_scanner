@@ -22,21 +22,10 @@ class ProductDetailsImage extends StatelessWidget {
         tag: heroTag,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16.r),
-          child: Image.network(
+          child: Image.asset(
             product.image,
             fit: BoxFit.cover,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Container(
-                color: Colors.grey[200],
-                child: Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.w,
-                    color: Colors.grey[400],
-                  ),
-                ),
-              );
-            },
+            
             errorBuilder: (context, error, stackTrace) {
               return Container(
                 color: Colors.grey[200],

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:qr_code_inventory/app/utils/app_colors.dart';
 import 'package:qr_code_inventory/app/views/main/cart/controller/cart_controller.dart';
 import 'package:qr_code_inventory/app/views/main/cart/widgets/cart_item_widget.dart';
 import 'package:qr_code_inventory/app/views/main/cart/widgets/cart_bottom_section.dart';
@@ -63,11 +62,11 @@ class CartView extends StatelessWidget {
                       height: 20.w,
                       decoration: BoxDecoration(
                         color: controller.isSelectAll.value 
-                          ? AppColors.primary 
+                          ? const Color(0xFF003366)
                           : Colors.transparent,
                         border: Border.all(
                           color: controller.isSelectAll.value 
-                            ? AppColors.primary 
+                            ? const Color(0xFF003366)
                             : Colors.grey[300]!,
                           width: 1.5,
                         ),
@@ -77,7 +76,7 @@ class CartView extends StatelessWidget {
                         ? Icon(
                             Icons.check,
                             size: 14.w,
-                            color: Colors.black,
+                            color: Colors.white,
                           )
                         : null,
                     ),
