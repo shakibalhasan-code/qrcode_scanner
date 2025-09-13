@@ -15,8 +15,10 @@ class FavouriteView extends StatelessWidget {
         backgroundColor: Colors.white,
 
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('Favourites'),
         backgroundColor: Colors.white,
+        leading: SizedBox(),
       ),
       body:  Center(
         child: Column(

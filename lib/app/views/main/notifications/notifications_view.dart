@@ -17,21 +17,7 @@ class NotificationsView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          onPressed: controller.onBackPressed,
-          icon: Container(
-            padding: EdgeInsets.all(8.w),
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.arrow_back,
-              size: 20.w,
-              color: Colors.black,
-            ),
-          ),
-        ),
+        leading: SizedBox(),
         title: Text(
           'Notification',
           style: TextStyle(

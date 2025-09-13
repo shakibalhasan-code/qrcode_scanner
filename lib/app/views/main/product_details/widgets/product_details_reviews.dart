@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:qr_code_inventory/app/views/main/product_details/widgets/review_feedback_dialog_view.dart';
 
 class ProductDetailsReviews extends StatefulWidget {
   const ProductDetailsReviews({super.key});
@@ -36,7 +37,9 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
                   });
                 },
                 child: Icon(
-                  isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                  isExpanded
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
                   size: 24.w,
                   color: Colors.grey[600],
                 ),
@@ -44,7 +47,7 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
             ],
           ),
           SizedBox(height: 16.h),
-          
+
           // Rating Summary
           Row(
             children: [
@@ -92,18 +95,18 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
               ),
             ],
           ),
-          
+
           SizedBox(height: 24.h),
-          
+
           // Rating Breakdown
           _buildRatingBar(5, 0.8),
           _buildRatingBar(4, 0.12),
           _buildRatingBar(3, 0.05),
           _buildRatingBar(2, 0.03),
           _buildRatingBar(1, 0.0),
-          
+
           SizedBox(height: 24.h),
-          
+
           // Reviews List
           if (isExpanded) ...[
             _buildReviewItem(
@@ -124,15 +127,18 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
               children: [
                 Text(
                   '17 Reviews',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
                 ),
                 const Spacer(),
                 GestureDetector(
                   onTap: () {
                     // Handle write review
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const FeedbackDialog();
+                      },
+                    );
                   },
                   child: Row(
                     children: [
@@ -144,11 +150,7 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
                         ),
                       ),
                       SizedBox(width: 4.w),
-                      Icon(
-                        Icons.edit,
-                        size: 16.w,
-                        color: Colors.grey[600],
-                      ),
+                      Icon(Icons.edit, size: 16.w, color: Colors.grey[600]),
                     ],
                   ),
                 ),
@@ -165,18 +167,11 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
       padding: EdgeInsets.symmetric(vertical: 2.h),
       child: Row(
         children: [
-          Icon(
-            Icons.star,
-            size: 16.w,
-            color: Colors.orange,
-          ),
+          Icon(Icons.star, size: 16.w, color: Colors.orange),
           SizedBox(width: 4.w),
           Text(
             stars.toString(),
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.grey[700],
-            ),
+            style: TextStyle(fontSize: 14.sp, color: Colors.grey[700]),
           ),
           SizedBox(width: 8.w),
           Expanded(
@@ -201,10 +196,7 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
           SizedBox(width: 8.w),
           Text(
             '${(percentage * 100).toInt()}%',
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
           ),
         ],
       ),
@@ -244,10 +236,7 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
                   ),
                   Text(
                     time,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
                   ),
                 ],
               ),

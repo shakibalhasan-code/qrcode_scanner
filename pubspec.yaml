@@ -48,6 +48,7 @@ dependencies:
   hugeicons: ^0.0.7
   image_picker: ^1.0.4
   url_launcher: ^6.2.4
+  flutter_rating_bar: ^4.0.1
 
 dev_dependencies:
   flutter_test:
