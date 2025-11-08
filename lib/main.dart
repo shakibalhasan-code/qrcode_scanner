@@ -3,10 +3,15 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qr_code_inventory/app/bindings/initial_binding.dart';
 import 'package:qr_code_inventory/app/utils/routes/app_pages.dart';
+import 'package:get_storage/get_storage.dart';
 
 void main() async {
   // Ensure Flutter is initialized before anything else
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize GetStorage
+  await GetStorage.init();
+
   // Then initialize dependencies
   InitialBinding().dependencies();
   runApp(const MyApp());

@@ -7,7 +7,8 @@ import 'package:qr_code_inventory/app/utils/routes/app_pages.dart';
 import 'package:qr_code_inventory/app/widgets/custom_textfeild.dart';
 import 'package:qr_code_inventory/app/widgets/password_requirements.dart';
 import 'package:qr_code_inventory/app/widgets/phone_number_feild.dart';
-import 'package:qr_code_inventory/app/widgets/primary_button.dart' show PrimaryButton;
+import 'package:qr_code_inventory/app/widgets/primary_button.dart'
+    show PrimaryButton;
 
 class CreateAccountScreen extends StatelessWidget {
   const CreateAccountScreen({super.key});
@@ -53,6 +54,7 @@ class CreateAccountScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 40),
+
                 CustomTextField(
                   label: 'Email',
                   controller: authController.createEmailController,
@@ -73,60 +75,73 @@ class CreateAccountScreen extends StatelessWidget {
                   hint: 'XXXX XXXX XXXX',
                 ),
                 const SizedBox(height: 24),
-                Obx(() => CustomTextField(
-                  label: 'Password',
-                  controller: authController.createPasswordController,
-                  hint: '*********',
-                  prefixIcon: Icons.lock_outline,
-                  obscureText: !authController.isPasswordVisible.value,
-                  suffixIcon: authController.isPasswordVisible.value
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  onSuffixIconPressed: () {
-                    authController.togglePasswordVisibility();
-                  },
-                )),
+                Obx(
+                  () => CustomTextField(
+                    label: 'Password',
+                    controller: authController.createPasswordController,
+                    hint: '*********',
+                    prefixIcon: Icons.lock_outline,
+                    obscureText: !authController.isPasswordVisible.value,
+                    suffixIcon: authController.isPasswordVisible.value
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    onSuffixIconPressed: () {
+                      authController.togglePasswordVisibility();
+                    },
+                  ),
+                ),
                 const SizedBox(height: 16),
                 const PasswordRequirement(
-                    text: 'Password Must Be At Least 8 Characters Long'),
+                  text: 'Password Must Be At Least 8 Characters Long',
+                ),
                 const PasswordRequirement(
-                    text: 'At Least One Uppercase Letter and One Number'),
+                  text: 'At Least One Uppercase Letter and One Number',
+                ),
                 const PasswordRequirement(
-                    text: 'At Least One Special Character'),
+                  text: 'At Least One Special Character',
+                ),
                 const SizedBox(height: 24),
-                Obx(() => CustomTextField(
-                  label: 'Confirm Password',
-                  controller: authController.confirmPasswordController,
-                  hint: '*********',
-                  prefixIcon: Icons.lock_outline,
-                  obscureText: !authController.isPasswordVisible.value,
-                  suffixIcon: authController.isPasswordVisible.value
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  onSuffixIconPressed: () {
-                    authController.togglePasswordVisibility();
-                  },
-                )),
+                Obx(
+                  () => CustomTextField(
+                    label: 'Confirm Password',
+                    controller: authController.confirmPasswordController,
+                    hint: '*********',
+                    prefixIcon: Icons.lock_outline,
+                    obscureText: !authController.isPasswordVisible.value,
+                    suffixIcon: authController.isPasswordVisible.value
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    onSuffixIconPressed: () {
+                      authController.togglePasswordVisibility();
+                    },
+                  ),
+                ),
                 const SizedBox(height: 24),
                 Row(
                   children: [
-                    Obx(() => Checkbox(
-                          value: authController.termsAgreed.value,
-                          onChanged: (value) => authController.toggleTermsAgreement(value),
-                          visualDensity: VisualDensity.compact,
-                        )),
+                    Obx(
+                      () => Checkbox(
+                        value: authController.termsAgreed.value,
+                        onChanged: (value) =>
+                            authController.toggleTermsAgreement(value),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ),
                     Expanded(
                       child: RichText(
                         text: TextSpan(
                           style: const TextStyle(
-                              fontSize: 14, color: AppColors.secondaryText),
+                            fontSize: 14,
+                            color: AppColors.secondaryText,
+                          ),
                           children: [
                             const TextSpan(text: 'I agree with all '),
                             TextSpan(
                               text: 'Terms & Conditions',
                               style: const TextStyle(
-                                  color: AppColors.accent,
-                                  fontWeight: FontWeight.bold),
+                                color: AppColors.accent,
+                                fontWeight: FontWeight.bold,
+                              ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   // Handle Terms & Conditions tap
@@ -136,8 +151,9 @@ class CreateAccountScreen extends StatelessWidget {
                             TextSpan(
                               text: 'Privacy Policy',
                               style: const TextStyle(
-                                  color: AppColors.accent,
-                                  fontWeight: FontWeight.bold),
+                                color: AppColors.accent,
+                                fontWeight: FontWeight.bold,
+                              ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   // Handle Privacy Policy tap
@@ -150,14 +166,18 @@ class CreateAccountScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 32),
-                Obx(() => PrimaryButton(
-                  text: authController.isLoading.value ? 'Loading...' : 'Sign Up',
-                  onPressed: authController.isLoading.value
-                      ? (){} // Provide an empty function when disabled
-                      : () {
-                          authController.createAccount();
-                        },
-                )),
+                Obx(
+                  () => PrimaryButton(
+                    text: authController.isLoading.value
+                        ? 'Loading...'
+                        : 'Sign Up',
+                    onPressed: authController.isLoading.value
+                        ? () {} // Provide an empty function when disabled
+                        : () {
+                            authController.createAccount();
+                          },
+                  ),
+                ),
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -192,4 +212,3 @@ class CreateAccountScreen extends StatelessWidget {
     );
   }
 }
-

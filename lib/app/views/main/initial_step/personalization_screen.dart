@@ -61,10 +61,15 @@ class PersonalizationScreen extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                            child: PrimaryButton(
-                              text:
-                                  'Continue ${controller.currentStep.value + 1}/${controller.totalSteps.value}',
-                              onPressed: controller.nextSection,
+                            child: Obx(
+                              () => PrimaryButton(
+                                text: controller.isLoading.value
+                                    ? 'Loading...'
+                                    : 'Continue ${controller.currentStep.value + 1}/${controller.totalSteps.value}',
+                                onPressed: controller.isLoading.value
+                                    ? () {}
+                                    : controller.nextSection,
+                              ),
                             ),
                           ),
                           SizedBox(width: 10.w),

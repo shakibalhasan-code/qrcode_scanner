@@ -6,7 +6,6 @@ import 'package:qr_code_inventory/app/utils/routes/app_pages.dart';
 import 'package:qr_code_inventory/app/widgets/custom_textfeild.dart';
 import 'package:qr_code_inventory/app/widgets/primary_button.dart';
 
-
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
@@ -59,6 +58,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 48),
+
                 CustomTextField(
                   label: 'Email',
                   controller: authController.loginEmailController,
@@ -66,30 +66,35 @@ class LoginScreen extends StatelessWidget {
                   prefixIcon: Icons.email_outlined,
                 ),
                 const SizedBox(height: 24),
-                Obx(() => CustomTextField(
-                  label: 'Password',
-                  controller: authController.loginPasswordController,
-                  hint: '*********',
-                  prefixIcon: Icons.lock_outline,
-                  obscureText: !authController.isPasswordVisible.value,
-                  suffixIcon: authController.isPasswordVisible.value
-                      ? Icons.visibility_outlined
-                      : Icons.visibility_off_outlined,
-                  onSuffixIconPressed: () {
-                    authController.togglePasswordVisibility();
-                  },
-                )),
+                Obx(
+                  () => CustomTextField(
+                    label: 'Password',
+                    controller: authController.loginPasswordController,
+                    hint: '*********',
+                    prefixIcon: Icons.lock_outline,
+                    obscureText: !authController.isPasswordVisible.value,
+                    suffixIcon: authController.isPasswordVisible.value
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    onSuffixIconPressed: () {
+                      authController.togglePasswordVisibility();
+                    },
+                  ),
+                ),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        Obx(() => Checkbox(
-                              value: authController.rememberMe.value,
-                              onChanged: (value) => authController.toggleRememberMe(value),
-                              visualDensity: VisualDensity.compact,
-                            )),
+                        Obx(
+                          () => Checkbox(
+                            value: authController.rememberMe.value,
+                            onChanged: (value) =>
+                                authController.toggleRememberMe(value),
+                            visualDensity: VisualDensity.compact,
+                          ),
+                        ),
                         const Text(
                           'Remember me',
                           style: TextStyle(color: AppColors.secondaryText),
@@ -106,15 +111,18 @@ class LoginScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 32),
-                Obx(() => PrimaryButton(
-                  text: authController.isLoading.value ? 'Loading...' : 'Login',
-                  onPressed: authController.isLoading.value
-                      ? (){} // Provide an empty function when disabled
-                      : () {
-                          authController.login();
-                          
-                        },
-                )),
+                Obx(
+                  () => PrimaryButton(
+                    text: authController.isLoading.value
+                        ? 'Loading...'
+                        : 'Login',
+                    onPressed: authController.isLoading.value
+                        ? () {} // Provide an empty function when disabled
+                        : () {
+                            authController.login();
+                          },
+                  ),
+                ),
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -139,7 +147,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),
