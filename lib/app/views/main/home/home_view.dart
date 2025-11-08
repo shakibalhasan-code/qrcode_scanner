@@ -13,7 +13,7 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.put(HomeController());
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -21,7 +21,7 @@ class HomeView extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: 8.h),
-              
+
               // Header Section
               GetBuilder<HomeController>(
                 builder: (controller) => HomeHeaderWidget(
@@ -29,36 +29,38 @@ class HomeView extends StatelessWidget {
                   userName: controller.userName.value,
                 ),
               ),
-              
+
               SizedBox(height: 16.h),
-              
+
               // Search Section
               const HomeSearchWidget(),
-              
+
               SizedBox(height: 24.h),
-              
+
               // Categories Section
               GetBuilder<HomeController>(
                 builder: (controller) => HomeCategoriesWidget(
                   categories: controller.categories,
+                  isLoading: controller.isCategoriesLoading.value,
                   onSeeAll: controller.onSeeAllCategories,
                   onCategoryTap: controller.onCategoryTap,
                 ),
               ),
-              
+
               SizedBox(height: 32.h),
-              
-              // Special Products Section
+
+              // Products Section
               GetBuilder<HomeController>(
                 builder: (controller) => HomeSpecialProductsWidget(
-                  products: controller.specialProducts,
-                  onSeeAll: controller.onSeeAllSpecialProducts,
+                  products: controller.products,
+                  isLoading: controller.isProductsLoading.value,
+                  onSeeAll: controller.onSeeAllProducts,
                   onProductTap: controller.onProductTap,
                   onToggleFavorite: controller.toggleFavorite,
                   isFavorite: controller.isFavorite,
                 ),
               ),
-              
+
               SizedBox(height: 24.h),
             ],
           ),

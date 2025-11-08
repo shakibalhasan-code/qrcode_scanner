@@ -32,10 +32,6 @@ class InitialController extends GetxController {
   // Loading state
   var isLoading = false.obs;
 
-  // Category ID - This should be fetched from API or set based on user selection
-  // For now, using the example category ID from the API documentation
-  final String categoryId = "68a2f80cdf1f41fbc82b66ba";
-
   // Getter for the selected product type
   String get selectedProductType => _selectedProductType.value;
 
@@ -205,14 +201,18 @@ class InitialController extends GetxController {
         return;
       }
 
+      // Use default category ID from API documentation
+      const String categoryToUse = "68a2f80cdf1f41fbc82b66ba";
+      debugPrint('🏷️ Using default category ID: $categoryToUse');
+
       debugPrint('📋 Form Data:');
       debugPrint('👤 Name: ${nameController.text.trim()}');
       debugPrint('📧 Email: ${emailController.text.trim()}');
       debugPrint('📅 Birthday: ${selectedDay.value}');
-      debugPrint('🏷️ Category: $categoryId');
+      debugPrint('🏷️ Category: $categoryToUse');
 
       final response = await authService.createPersonalization(
-        category: categoryId,
+        category: categoryToUse,
         email: emailController.text.trim(),
         name: nameController.text.trim(),
         birthday: selectedDay.value!,

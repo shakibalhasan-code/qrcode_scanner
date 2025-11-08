@@ -1,20 +1,24 @@
 import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/bindings/auth_binding.dart';
+import 'package:qr_code_inventory/app/controllers/app_controller.dart';
+import 'package:qr_code_inventory/app/core/services/category_service.dart';
+import 'package:qr_code_inventory/app/core/services/product_service.dart';
 import 'package:qr_code_inventory/app/views/main/dashboard/controller/dashboard_controller.dart';
 import 'package:qr_code_inventory/app/views/main/initial_step/controllers/initial_controller.dart';
-import 'package:qr_code_inventory/app/views/main/search/controller/search_controller.dart';
 
 class InitialBinding implements Bindings {
   @override
   void dependencies() {
-    // Initialize all bindings here
+    // Register AuthBinding
     AuthBinding().dependencies();
-    Get.lazyPut(()=> InitialController());
-    Get.lazyPut(()=> DashboardController());
-    Get.lazyPut(()=> ProductSearchController());
 
-    // Add other bindings as your app grows
-    // Example: HomeBinding().dependencies();
-    // Example: InventoryBinding().dependencies();
+    // Controllers
+    Get.lazyPut<AppController>(() => AppController(), fenix: true);
+    Get.lazyPut<InitialController>(() => InitialController(), fenix: true);
+    Get.lazyPut<DashboardController>(() => DashboardController(), fenix: true);
+
+    // Services
+    Get.lazyPut<CategoryService>(() => CategoryService(), fenix: true);
+    Get.lazyPut<ProductService>(() => ProductService(), fenix: true);
   }
 }

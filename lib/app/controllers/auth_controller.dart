@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:qr_code_inventory/app/controllers/app_controller.dart';
 import 'package:qr_code_inventory/app/views/auth/changed_pass_view.dart';
 import 'package:qr_code_inventory/app/views/auth/otp_verify_screen.dart';
 import 'package:qr_code_inventory/app/views/auth/reset_password_screen.dart';
@@ -10,6 +11,7 @@ import 'package:qr_code_inventory/app/views/main/initial_step/personalization_sc
 import 'package:qr_code_inventory/app/views/main/initial_step/bindings/personalization_binding.dart';
 import 'package:qr_code_inventory/app/core/services/auth_service.dart';
 import 'package:qr_code_inventory/app/core/services/token_storage.dart';
+import 'package:qr_code_inventory/app/utils/routes/app_pages.dart';
 
 class AuthController extends GetxController {
   // Services
@@ -184,11 +186,17 @@ class AuthController extends GetxController {
           snackPosition: SnackPosition.TOP,
         );
 
-        debugPrint('🚀 Navigating to PersonalizationScreen');
-        Get.to(
-          () => PersonalizationScreen(),
-          binding: PersonalizationBinding(),
-        );
+        debugPrint('🚀 Navigating to Dashboard');
+        // Notify AppController about successful login
+        try {
+          final appController = Get.find<AppController>();
+          appController.onLoginSuccess();
+        } catch (e) {
+          debugPrint('⚠️ AppController not found: $e');
+        }
+
+        // Navigate to dashboard
+        Get.offAllNamed(Routes.DASHBOARD);
       } else {
         debugPrint('❌ Login failed - showing error toast');
         // Show error toast

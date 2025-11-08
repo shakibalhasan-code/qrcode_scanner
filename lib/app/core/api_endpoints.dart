@@ -13,5 +13,14 @@ class ApiEndpoints {
   // Personalization Endpoints
   static const String createPersonalization = '$baseUrl/personalization/create';
 
+  // Category Endpoints
+  static const String getAllCategories = '$baseUrl/category/get-all';
+
+  // Product Endpoints
+  static const String getAllProducts = '$baseUrl/product/get-all-products';
+
+  // Image Base URL
+  static const String imageBaseUrl = 'http://10.10.12.25:5008';
+
   // Additional endpoints can be added here as needed
 }

@@ -3,11 +3,19 @@ import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/core/utils/app_images.dart';
 import 'package:qr_code_inventory/app/core/models/category_model.dart';
 import 'package:qr_code_inventory/app/core/models/product_model.dart';
-import 'package:qr_code_inventory/app/views/main/categories/categories_view.dart';
+import 'package:qr_code_inventory/app/core/services/category_service.dart';
+import 'package:qr_code_inventory/app/core/services/product_service.dart';
+import 'package:qr_code_inventory/app/core/services/token_storage.dart';
 import 'package:qr_code_inventory/app/views/main/home/sub_screen/special_product_screen.dart';
 import 'package:qr_code_inventory/app/views/main/product_details/product_details_view.dart';
+import 'package:qr_code_inventory/app/utils/routes/app_pages.dart';
 
 class HomeController extends GetxController {
+  // Services
+  late CategoryService categoryService;
+  late ProductService productService;
+  late TokenStorage tokenStorage;
+
   // User info
   final userName = 'Alexander Putra !'.obs;
   final greeting = 'Happy Shopping'.obs;
@@ -17,45 +25,12 @@ class HomeController extends GetxController {
   final searchQuery = ''.obs;
 
   // Categories data
-  final categories = <Category>[
-    Category(id: '1', name: 'Hat', image: AppImages.straw),
-    Category(id: '2', name: 'Mug', image: AppImages.mug),
-    Category(id: '3', name: 'Kitchen', image: AppImages.supplies),
-    Category(id: '4', name: 'Keychains', image: AppImages.key),
-    Category(id: '5', name: 'Bag', image: AppImages.bag),
-  ].obs;
+  final categories = <Category>[].obs;
+  var isCategoriesLoading = false.obs;
 
-  // Special products data
-  final specialProducts = <Product>[
-    Product(
-      id: '1',
-      name: 'New Balance Hat Core Sneakers',
-      image: AppImages.straw,
-      price: 95.00,
-      isSpecial: true,
-    ),
-    Product(
-      id: '2',
-      name: 'The Ordinary Sale Products',
-      image: AppImages.sale,
-      price: 10.00,
-      isSpecial: true,
-    ),
-    Product(
-      id: '3',
-      name: 'Smart Tag Keychains 2 - Pack of 2',
-      image: AppImages.key,
-      price: 60.00,
-      isSpecial: true,
-    ),
-    Product(
-      id: '4',
-      name: 'Clarks Leather Crossbody Bag',
-      image: AppImages.bag,
-      price: 140.00,
-      isSpecial: true,
-    ),
-  ].obs;
+  // Products data
+  final products = <Product>[].obs;
+  var isProductsLoading = false.obs;
 
   // Favorites tracking
   final favoriteProducts = <String>[].obs;
@@ -63,9 +38,22 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    categoryService = Get.find<CategoryService>();
+    productService = Get.find<ProductService>();
+    tokenStorage = Get.find<TokenStorage>();
+
     searchController.addListener(() {
       searchQuery.value = searchController.text;
     });
+
+    // Load categories from API
+    loadCategories();
+
+    // Load products from API
+    loadProducts();
+
+    // Load user info from storage
+    loadUserInfo();
   }
 
   @override
@@ -107,10 +95,104 @@ class HomeController extends GetxController {
   }
 
   void onSeeAllCategories() {
-    Get.to(() => const CategoriesView());
+    debugPrint('🚀 Navigating to Categories screen');
+    Get.toNamed(Routes.CATEGORIES);
   }
 
-  void onSeeAllSpecialProducts() {
+  void onSeeAllProducts() {
     Get.to(SpecialProductScreen());
+  }
+
+  // Load categories from API
+  Future<void> loadCategories() async {
+    debugPrint('🚀 HomeController.loadCategories() called');
+
+    try {
+      isCategoriesLoading.value = true;
+
+      final token = tokenStorage.getAccessToken();
+      if (token == null) {
+        debugPrint('❌ No token found for loading categories');
+        // Load fallback categories
+        _loadFallbackCategories();
+        return;
+      }
+
+      final response = await categoryService.getAllCategories(token: token);
+
+      if (response.success) {
+        categories.value = response.data.result;
+        debugPrint('✅ Loaded ${categories.length} categories from API');
+        update(); // Notify GetBuilder to rebuild
+      } else {
+        debugPrint('❌ Failed to load categories: ${response.message}');
+        // Load fallback categories
+        _loadFallbackCategories();
+      }
+    } catch (e) {
+      debugPrint('💥 Exception in loadCategories: $e');
+      // Load fallback categories
+      _loadFallbackCategories();
+    } finally {
+      isCategoriesLoading.value = false;
+    }
+  }
+
+  // Load fallback categories if API fails
+  void _loadFallbackCategories() {
+    debugPrint('📦 Loading fallback categories');
+    categories.value = [
+      Category(id: '1', name: 'Electronics', image: AppImages.straw),
+      Category(id: '2', name: 'Accessories', image: AppImages.mug),
+      Category(id: '3', name: 'Kitchen', image: AppImages.supplies),
+      Category(id: '4', name: 'Keychains', image: AppImages.key),
+      Category(id: '5', name: 'Bags', image: AppImages.bag),
+    ];
+    update();
+  }
+
+  // Load products from API
+  Future<void> loadProducts() async {
+    debugPrint('🚀 HomeController.loadProducts() called');
+
+    try {
+      isProductsLoading.value = true;
+
+      final token = tokenStorage.getAccessToken();
+      if (token == null) {
+        debugPrint('❌ No token found for loading products');
+        return;
+      }
+
+      final response = await productService.getAllProducts(token: token);
+
+      if (response.success) {
+        products.value = response.data.result;
+        debugPrint('✅ Loaded ${products.length} products from API');
+        update(); // Notify GetBuilder to rebuild
+      } else {
+        debugPrint('❌ Failed to load products: ${response.message}');
+      }
+    } catch (e) {
+      debugPrint('💥 Exception in loadProducts: $e');
+    } finally {
+      isProductsLoading.value = false;
+    }
+  }
+
+  // Load user info from storage
+  void loadUserInfo() {
+    debugPrint('👤 Loading user info from storage');
+    try {
+      final userData = tokenStorage.getUserData();
+      if (userData != null && userData['name'] != null) {
+        userName.value = userData['name'];
+        debugPrint('✅ User name loaded: ${userName.value}');
+      } else {
+        debugPrint('⚠️ No user name found in storage');
+      }
+    } catch (e) {
+      debugPrint('💥 Error loading user info: $e');
+    }
   }
 }
