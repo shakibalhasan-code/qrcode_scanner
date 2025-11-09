@@ -13,6 +13,7 @@ abstract class Routes {
   static const PASSWORD_CHANGED = _Paths.PASSWORD_CHANGED;
   static const DASHBOARD = _Paths.DASHBOARD;
   static const CATEGORIES = _Paths.CATEGORIES;
+  static const WISHLIST = _Paths.WISHLIST;
 }
 
 abstract class _Paths {
@@ -26,4 +27,5 @@ abstract class _Paths {
   static const PASSWORD_CHANGED = '/password-changed';
   static const DASHBOARD = '/dashboard';
   static const CATEGORIES = '/categories';
+  static const WISHLIST = '/wishlist';
 }

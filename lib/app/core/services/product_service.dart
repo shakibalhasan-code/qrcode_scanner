@@ -49,4 +49,43 @@ class ProductService extends GetxService {
       );
     }
   }
+
+  // Get Product Details by ID
+  Future<ProductDetailsResponse> getProductDetails({
+    required String productId,
+    required String token,
+  }) async {
+    debugPrint('🚀 ProductService.getProductDetails() called');
+    debugPrint('🆔 Product ID: $productId');
+    debugPrint('🔗 URL: ${ApiEndpoints.getProductDetails}/$productId');
+
+    try {
+      final response = await _httpClient.get(
+        Uri.parse('${ApiEndpoints.getProductDetails}/$productId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      debugPrint('📊 Response Status: ${response.statusCode}');
+      debugPrint('📄 Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = jsonDecode(response.body);
+        debugPrint('✅ Product details retrieved successfully');
+        return ProductDetailsResponse.fromJson(responseData);
+      } else {
+        debugPrint('❌ Failed to get product details: ${response.statusCode}');
+        final errorData = jsonDecode(response.body);
+        throw Exception(
+          errorData['message'] ??
+              'Failed to get product details: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      debugPrint('💥 Exception in getProductDetails: $e');
+      rethrow;
+    }
+  }
 }

@@ -18,6 +18,17 @@ class ApiEndpoints {
 
   // Product Endpoints
   static const String getAllProducts = '$baseUrl/product/get-all-products';
+  static const String getProductDetails = '$baseUrl/product/get-details';
+
+  // Wishlist Endpoints
+  static const String addToWishlist = '$baseUrl/wishlist/add-to-wishlist';
+  static const String removeFromWishlist =
+      '$baseUrl/wishlist/remove-from-wishlist';
+  static const String getAllWishlists = '$baseUrl/wishlist/get-all-wishlists';
+
+  // User Profile Endpoints
+  static const String getUserProfile = '$baseUrl/user/profile';
+  static const String updateUserProfile = '$baseUrl/user/update-profile';
 
   // Image Base URL
   static const String imageBaseUrl = 'http://10.10.12.25:5008';

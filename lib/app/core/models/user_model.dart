@@ -44,4 +44,103 @@ class User {
       'updatedAt': updatedAt.toIso8601String(),
     };
   }
+
+  // Helper methods
+  String get displayName => name.isNotEmpty ? name : 'User';
+  
+  String get initials {
+    if (name.isEmpty) return 'U';
+    final parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return name[0].toUpperCase();
+  }
+
+  bool get isVerified => verified;
+  bool get isAdmin => role.toUpperCase() == 'ADMIN';
+  bool get isUser => role.toUpperCase() == 'USER';
+
+  String get formattedJoinDate {
+    final months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    return '${months[createdAt.month - 1]} ${createdAt.year}';
+  }
+
+  // Helper method to get complete image URL
+  String? getFullImageUrl() {
+    if (image == null || image!.isEmpty) return null;
+    if (image!.startsWith('http')) {
+      return image;
+    }
+    return 'http://10.10.12.25:5008$image';
+  }
+
+  // CopyWith method for creating modified copies
+  User copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? role,
+    bool? verified,
+    String? image,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return User(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      role: role ?? this.role,
+      verified: verified ?? this.verified,
+      image: image ?? this.image,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'User{id: $id, name: $name, email: $email, role: $role, verified: $verified}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is User && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+}
+
+// User Profile Response model
+class UserProfileResponse {
+  final bool success;
+  final String message;
+  final User data;
+
+  UserProfileResponse({
+    required this.success,
+    required this.message,
+    required this.data,
+  });
+
+  factory UserProfileResponse.fromJson(Map<String, dynamic> json) {
+    return UserProfileResponse(
+      success: json['success'] ?? false,
+      message: json['message'] ?? '',
+      data: User.fromJson(json['data'] ?? {}),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'success': success,
+      'message': message,
+      'data': data.toJson(),
+    };
+  }
 }

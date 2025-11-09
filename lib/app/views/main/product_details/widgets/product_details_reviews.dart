@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:qr_code_inventory/app/core/models/product_model.dart';
 
 class ProductDetailsReviews extends StatefulWidget {
-  const ProductDetailsReviews({super.key});
+  final Product? product;
+
+  const ProductDetailsReviews({super.key, this.product});
 
   @override
   State<ProductDetailsReviews> createState() => _ProductDetailsReviewsState();
@@ -36,7 +39,9 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
                   });
                 },
                 child: Icon(
-                  isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                  isExpanded
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
                   size: 24.w,
                   color: Colors.grey[600],
                 ),
@@ -44,12 +49,12 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
             ],
           ),
           SizedBox(height: 16.h),
-          
+
           // Rating Summary
           Row(
             children: [
               Text(
-                '4.7',
+                widget.product?.effectiveRating.toStringAsFixed(1) ?? '0.0',
                 style: TextStyle(
                   fontSize: 48.sp,
                   fontWeight: FontWeight.w700,
@@ -72,16 +77,19 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
                     SizedBox(height: 4.h),
                     Row(
                       children: List.generate(5, (index) {
+                        final rating = widget.product?.effectiveRating ?? 0.0;
                         return Icon(
                           Icons.star,
                           size: 20.w,
-                          color: Colors.orange,
+                          color: index < rating
+                              ? Colors.orange
+                              : Colors.grey[300],
                         );
                       }),
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      '83 ratings',
+                      '${widget.product?.totalReviews ?? 0} ratings',
                       style: TextStyle(
                         fontSize: 12.sp,
                         color: Colors.grey[600],
@@ -92,18 +100,14 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
               ),
             ],
           ),
-          
+
           SizedBox(height: 24.h),
-          
+
           // Rating Breakdown
-          _buildRatingBar(5, 0.8),
-          _buildRatingBar(4, 0.12),
-          _buildRatingBar(3, 0.05),
-          _buildRatingBar(2, 0.03),
-          _buildRatingBar(1, 0.0),
-          
+          ..._buildRatingBars(),
+
           SizedBox(height: 24.h),
-          
+
           // Reviews List
           if (isExpanded) ...[
             _buildReviewItem(
@@ -123,11 +127,8 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
             Row(
               children: [
                 Text(
-                  '17 Reviews',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.grey[600],
-                  ),
+                  '${widget.product?.totalReviews ?? 0} Reviews',
+                  style: TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
                 ),
                 const Spacer(),
                 GestureDetector(
@@ -144,11 +145,7 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
                         ),
                       ),
                       SizedBox(width: 4.w),
-                      Icon(
-                        Icons.edit,
-                        size: 16.w,
-                        color: Colors.grey[600],
-                      ),
+                      Icon(Icons.edit, size: 16.w, color: Colors.grey[600]),
                     ],
                   ),
                 ),
@@ -160,23 +157,33 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
     );
   }
 
+  List<Widget> _buildRatingBars() {
+    if (widget.product?.ratingStats == null) {
+      // If no rating stats, show default empty bars
+      return List.generate(5, (index) => _buildRatingBar(5 - index, 0.0));
+    }
+
+    final ratingStats = widget.product!.ratingStats!;
+    final totalReviews = ratingStats.totalReviews;
+
+    return List.generate(5, (index) {
+      final starLevel = 5 - index;
+      final count = ratingStats.counts['$starLevel'] ?? 0;
+      final percentage = totalReviews > 0 ? count / totalReviews : 0.0;
+      return _buildRatingBar(starLevel, percentage);
+    });
+  }
+
   Widget _buildRatingBar(int stars, double percentage) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 2.h),
       child: Row(
         children: [
-          Icon(
-            Icons.star,
-            size: 16.w,
-            color: Colors.orange,
-          ),
+          Icon(Icons.star, size: 16.w, color: Colors.orange),
           SizedBox(width: 4.w),
           Text(
             stars.toString(),
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.grey[700],
-            ),
+            style: TextStyle(fontSize: 14.sp, color: Colors.grey[700]),
           ),
           SizedBox(width: 8.w),
           Expanded(
@@ -201,10 +208,7 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
           SizedBox(width: 8.w),
           Text(
             '${(percentage * 100).toInt()}%',
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
           ),
         ],
       ),
@@ -244,10 +248,7 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
                   ),
                   Text(
                     time,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
                   ),
                 ],
               ),

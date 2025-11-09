@@ -16,24 +16,31 @@ class ProfileView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 16.h),
-              
-              // Profile Header
-              Container(
-                width: double.infinity,
-                color: Colors.white,
-                child: Obx(() => ProfileHeaderWidget(
-                  userName: controller.userName.value,
-                  userEmail: controller.userEmail.value,
-                  userPhone: controller.userPhone.value,
-                  avatarUrl: controller.userAvatar.value,
-                  selectedImage: controller.selectedProfileImage.value,
-                  onEditProfile: controller.onEditProfile,
-                )),
-              ),
+        child: Obx(() => controller.isLoadingProfile.value
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : RefreshIndicator(
+              onRefresh: controller.refreshUserProfile,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  children: [
+                    SizedBox(height: 16.h),
+                    
+                    // Profile Header
+                    Container(
+                      width: double.infinity,
+                      color: Colors.white,
+                      child: ProfileHeaderWidget(
+                        userName: controller.userName.value,
+                        userEmail: controller.userEmail.value,
+                        userPhone: controller.userPhone.value,
+                        avatarUrl: controller.userAvatar.value,
+                        selectedImage: controller.selectedProfileImage.value,
+                        onEditProfile: controller.onEditProfile,
+                      ),
+                    ),
               
               SizedBox(height: 8.h),
               
@@ -86,8 +93,10 @@ class ProfileView extends StatelessWidget {
                   ],
                 ),
               ),
-            ],
-          ),
+                  ],
+                ),
+              ),
+            ),
         ),
       ),
     );

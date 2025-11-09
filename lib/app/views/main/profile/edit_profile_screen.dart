@@ -126,8 +126,9 @@ class EditProfileScreen extends StatelessWidget {
             CustomTextField(
               label: 'Email',
               controller: emailController,
-              hint: 'Enter your email',
+              hint: 'Email address (read-only)',
               prefixIcon: Icons.email_outlined,
+              readOnly: true,
             ),
             
             SizedBox(height: 24.h),
@@ -144,14 +145,17 @@ class EditProfileScreen extends StatelessWidget {
             // Save Button
             Obx(() => PrimaryButton(
               text: controller.isUpdatingProfile.value ? 'Saving...' : 'Save Changes',
-              onPressed: () {
+              onPressed: () async {
                 if (!controller.isUpdatingProfile.value) {
-                  controller.updateUserInfo(
+                  await controller.saveProfileChanges(
                     name: nameController.text.trim(),
-                    email: emailController.text.trim(),
+                    // email: emailController.text.trim(), // Remove email since it's read-only
                     phone: phoneController.text.trim(),
                   );
-                  Get.back();
+                  // Don't navigate back immediately, let the method handle success/error
+                  if (!controller.isUpdatingProfile.value) {
+                    Get.back();
+                  }
                 }
               },
             )),

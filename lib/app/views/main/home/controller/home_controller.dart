@@ -5,7 +5,10 @@ import 'package:qr_code_inventory/app/core/models/category_model.dart';
 import 'package:qr_code_inventory/app/core/models/product_model.dart';
 import 'package:qr_code_inventory/app/core/services/category_service.dart';
 import 'package:qr_code_inventory/app/core/services/product_service.dart';
+import 'package:qr_code_inventory/app/core/services/wishlist_service.dart';
+import 'package:qr_code_inventory/app/core/services/user_service.dart';
 import 'package:qr_code_inventory/app/core/services/token_storage.dart';
+import 'package:qr_code_inventory/app/core/models/user_model.dart';
 import 'package:qr_code_inventory/app/views/main/home/sub_screen/special_product_screen.dart';
 import 'package:qr_code_inventory/app/views/main/product_details/product_details_view.dart';
 import 'package:qr_code_inventory/app/utils/routes/app_pages.dart';
@@ -14,11 +17,15 @@ class HomeController extends GetxController {
   // Services
   late CategoryService categoryService;
   late ProductService productService;
+  late WishlistService wishlistService;
+  late UserService userService;
   late TokenStorage tokenStorage;
 
   // User info
-  final userName = 'Alexander Putra !'.obs;
+  final userProfile = Rxn<User>();
+  final userName = 'User'.obs;
   final greeting = 'Happy Shopping'.obs;
+  final isUserLoading = false.obs;
 
   // Search functionality
   final searchController = TextEditingController();
@@ -32,14 +39,17 @@ class HomeController extends GetxController {
   final products = <Product>[].obs;
   var isProductsLoading = false.obs;
 
-  // Favorites tracking
-  final favoriteProducts = <String>[].obs;
+  // Wishlist tracking
+  final wishlistProductIds = <String>[].obs;
+  final isWishlistLoading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
     categoryService = Get.find<CategoryService>();
     productService = Get.find<ProductService>();
+    wishlistService = Get.find<WishlistService>();
+    userService = Get.find<UserService>();
     tokenStorage = Get.find<TokenStorage>();
 
     searchController.addListener(() {
@@ -52,8 +62,11 @@ class HomeController extends GetxController {
     // Load products from API
     loadProducts();
 
-    // Load user info from storage
-    loadUserInfo();
+    // Load user profile from API
+    loadUserProfile();
+
+    // Load wishlist from API
+    loadWishlist();
   }
 
   @override
@@ -67,17 +80,75 @@ class HomeController extends GetxController {
     searchQuery.value = query;
   }
 
-  void toggleFavorite(String productId) {
-    if (favoriteProducts.contains(productId)) {
-      favoriteProducts.remove(productId);
-    } else {
-      favoriteProducts.add(productId);
+  // Toggle wishlist status with API call
+  Future<void> toggleFavorite(String productId) async {
+    try {
+      final token = tokenStorage.getAccessToken();
+      if (token == null) {
+        Get.snackbar(
+          'Error',
+          'Please login to add items to wishlist',
+          backgroundColor: Colors.red.shade100,
+          colorText: Colors.red.shade800,
+        );
+        return;
+      }
+
+      if (wishlistProductIds.contains(productId)) {
+        // Remove from wishlist
+        final response = await wishlistService.removeFromWishlist(
+          productId: productId,
+          token: token,
+        );
+
+        if (response.success) {
+          wishlistProductIds.remove(productId);
+          Get.snackbar(
+            'Removed',
+            'Product removed from wishlist',
+            backgroundColor: Colors.orange.shade100,
+            colorText: Colors.orange.shade800,
+            duration: const Duration(seconds: 1),
+          );
+        } else {
+          throw Exception(response.message);
+        }
+      } else {
+        // Add to wishlist
+        final response = await wishlistService.addToWishlist(
+          productId: productId,
+          token: token,
+        );
+
+        if (response.success) {
+          wishlistProductIds.add(productId);
+          Get.snackbar(
+            'Added',
+            'Product added to wishlist',
+            backgroundColor: Colors.green.shade100,
+            colorText: Colors.green.shade800,
+            duration: const Duration(seconds: 1),
+          );
+        } else {
+          throw Exception(response.message);
+        }
+      }
+
+      update(); // Notify GetBuilder to rebuild
+    } catch (e) {
+      debugPrint('Error toggling wishlist: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to update wishlist',
+        backgroundColor: Colors.red.shade100,
+        colorText: Colors.red.shade800,
+        duration: const Duration(seconds: 2),
+      );
     }
-    update(); // Notify GetBuilder to rebuild
   }
 
   bool isFavorite(String productId) {
-    return favoriteProducts.contains(productId);
+    return wishlistProductIds.contains(productId);
   }
 
   void onCategoryTap(Category category) {
@@ -180,19 +251,104 @@ class HomeController extends GetxController {
     }
   }
 
-  // Load user info from storage
-  void loadUserInfo() {
-    debugPrint('👤 Loading user info from storage');
+  // Load wishlist from API
+  Future<void> loadWishlist() async {
+    debugPrint('❤️ Loading wishlist from API');
+
     try {
-      final userData = tokenStorage.getUserData();
-      if (userData != null && userData['name'] != null) {
-        userName.value = userData['name'];
-        debugPrint('✅ User name loaded: ${userName.value}');
+      isWishlistLoading.value = true;
+
+      final token = tokenStorage.getAccessToken();
+      if (token == null) {
+        debugPrint('❌ No token found for loading wishlist');
+        return;
+      }
+
+      final response = await wishlistService.getAllWishlists(token: token);
+
+      if (response.success) {
+        wishlistProductIds.clear();
+        for (var item in response.data.result) {
+          wishlistProductIds.add(item.product.id);
+        }
+        debugPrint('✅ Loaded ${wishlistProductIds.length} wishlist items');
+        update(); // Notify GetBuilder to rebuild
       } else {
-        debugPrint('⚠️ No user name found in storage');
+        debugPrint('❌ Failed to load wishlist: ${response.message}');
       }
     } catch (e) {
-      debugPrint('💥 Error loading user info: $e');
+      debugPrint('💥 Exception in loadWishlist: $e');
+    } finally {
+      isWishlistLoading.value = false;
     }
+  }
+
+  // Load user profile from API
+  Future<void> loadUserProfile() async {
+    debugPrint('👤 Loading user profile from API');
+    
+    try {
+      isUserLoading.value = true;
+      
+      final token = tokenStorage.getAccessToken();
+      if (token == null) {
+        debugPrint('❌ No token found for loading user profile');
+        // Try to load from storage as fallback
+        _loadUserFromStorage();
+        return;
+      }
+      
+      final response = await userService.getUserProfile(token: token);
+      
+      if (response.success) {
+        userProfile.value = response.data;
+        userName.value = response.data.displayName;
+        debugPrint('✅ User profile loaded: ${userName.value}');
+        
+        // Update storage with latest data
+        await tokenStorage.saveUserData(response.data.toJson());
+        
+        update(); // Notify GetBuilder to rebuild
+      } else {
+        throw Exception(response.message);
+      }
+    } catch (e) {
+      debugPrint('💥 Exception in loadUserProfile: $e');
+      // Fallback to storage
+      _loadUserFromStorage();
+    } finally {
+      isUserLoading.value = false;
+    }
+  }
+
+  // Load user info from storage as fallback
+  void _loadUserFromStorage() {
+    debugPrint('👤 Loading user info from storage (fallback)');
+    try {
+      final userData = tokenStorage.getUserData();
+      if (userData != null) {
+        if (userData['name'] != null) {
+          userName.value = userData['name'];
+          // Try to create User object from stored data
+          try {
+            userProfile.value = User.fromJson(userData);
+          } catch (e) {
+            debugPrint('⚠️ Could not parse stored user data: $e');
+          }
+        }
+        debugPrint('✅ User name loaded from storage: ${userName.value}');
+      } else {
+        debugPrint('⚠️ No user data found in storage');
+        userName.value = 'User';
+      }
+    } catch (e) {
+      debugPrint('💥 Error loading user info from storage: $e');
+      userName.value = 'User';
+    }
+  }
+  
+  // Method to refresh user profile
+  Future<void> refreshUserProfile() async {
+    await loadUserProfile();
   }
 }

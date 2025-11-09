@@ -26,7 +26,7 @@ class SpecialProductScreen extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: GetBuilder<HomeController>(
           builder: (controller) {
-          final products =   controller.specialProducts;
+            final products = controller.products;
             return GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -76,15 +76,18 @@ class SpecialProductScreen extends StatelessWidget {
                                   ),
                                   child: Hero(
                                     tag: product.id,
-                                    child: _buildProductImage(product.image),
+                                    child: _buildProductImage(
+                                      product.getFullImageUrl(),
+                                    ),
                                   ),
                                 ),
                               ),
-                                                          Positioned(
+                              Positioned(
                                 top: 8.h,
                                 right: 8.w,
                                 child: GestureDetector(
-                                  onTap: () => controller.toggleFavorite(product.id),
+                                  onTap: () =>
+                                      controller.toggleFavorite(product.id),
                                   child: Container(
                                     padding: EdgeInsets.all(6.w),
                                     decoration: BoxDecoration(
@@ -106,7 +109,7 @@ class SpecialProductScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-        
+
                         // Product Info
                         Expanded(
                           flex: 2,
@@ -131,7 +134,7 @@ class SpecialProductScreen extends StatelessWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      '\$${product.price?.toStringAsFixed(2) ?? '0.00'}',
+                                      product.getFormattedPrice(),
                                       style: TextStyle(
                                         fontSize: 14.sp,
                                         fontWeight: FontWeight.w400,
@@ -148,7 +151,8 @@ class SpecialProductScreen extends StatelessWidget {
                                         ),
                                         SizedBox(width: 2.w),
                                         Text(
-                                          '4.8', // Default rating since we removed it from Product model
+                                          product.effectiveRating
+                                              .toStringAsFixed(1),
                                           style: TextStyle(
                                             fontSize: 12.sp,
                                             fontWeight: FontWeight.w500,
@@ -175,7 +179,6 @@ class SpecialProductScreen extends StatelessWidget {
     );
   }
 
-  
   // Helper method to build product image with proper error handling
   Widget _buildProductImage(String imageUrl) {
     // Check if it's a network URL or asset path
@@ -197,7 +200,8 @@ class SpecialProductScreen extends StatelessWidget {
           return Center(
             child: CircularProgressIndicator(
               value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                  ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
                   : null,
               strokeWidth: 2,
               color: Colors.grey[400],

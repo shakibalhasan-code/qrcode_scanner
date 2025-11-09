@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/core/models/product_model.dart';
+import 'package:qr_code_inventory/app/core/models/category_model.dart';
 import 'package:qr_code_inventory/app/views/main/dashboard/view/dashboard_view.dart';
 
 class PersonalizationController extends GetxController {
@@ -18,42 +19,106 @@ class PersonalizationController extends GetxController {
     Product(
       id: '1',
       name: 'Mug',
-      image: 'https://www.bootsphoto.com/cdn/images/t2/fb/T2FBamRuMFZrOWRocWtZRG4yRmVEZVpsSTdRV25qK0dON3czeG1ta1FzcHB2UGlNYWNzR09SYUhScW5MQlNwWnhuaVV3V3A4aXIvZlNBRXduOFU2VTFxSklmOHB1ZCt4L3B0bm5GZjlBREU9.jpg',
+      image:
+          'https://www.bootsphoto.com/cdn/images/t2/fb/T2FBamRuMFZrOWRocWtZRG4yRmVEZVpsSTdRV25qK0dON3czeG1ta1FzcHB2UGlNYWNzR09SYUhScW5MQlNwWnhuaVV3V3A4aXIvZlNBRXduOFU2VTFxSklmOHB1ZCt4L3B0bm5GZjlBREU9.jpg',
+      price: '19.99',
+      size: 'Medium',
+      status: 'active',
+      qrId: 'QR001',
+      category: Category(id: 'cat1', name: 'Drinkware', image: ''),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     ),
     Product(
       id: '2',
       name: 'Hat',
-      image: 'https://images.unsplash.com/photo-1529958030586-3aae4ca485ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8aGF0fHx8fHx8MTcyNDA5MzYxMg&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080',
+      image:
+          'https://images.unsplash.com/photo-1529958030586-3aae4ca485ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8aGF0fHx8fHx8MTcyNDA5MzYxMg&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080',
+      price: '24.99',
+      size: 'Large',
+      status: 'active',
+      qrId: 'QR002',
+      category: Category(id: 'cat2', name: 'Apparel', image: ''),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     ),
     Product(
       id: '3',
       name: 'Bag',
-      image: 'https://img.freepik.com/free-psd/ladies-purse-3d-rendering-isometric-icon_47987-9664.jpg',
+      image:
+          'https://img.freepik.com/free-psd/ladies-purse-3d-rendering-isometric-icon_47987-9664.jpg',
+      price: '49.99',
+      size: 'Large',
+      status: 'active',
+      qrId: 'QR003',
+      category: Category(id: 'cat3', name: 'Bags', image: ''),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     ),
     Product(
       id: '4',
       name: 'Keychains',
-      image: 'https://img.drz.lazcdn.com/static/bd/p/960bb809ba8e55e7f98971a742723762.jpg_720x720q80.jpg',
+      image:
+          'https://img.drz.lazcdn.com/static/bd/p/960bb809ba8e55e7f98971a742723762.jpg_720x720q80.jpg',
+      price: '9.99',
+      size: 'Small',
+      status: 'active',
+      qrId: 'QR004',
+      category: Category(id: 'cat4', name: 'Accessories', image: ''),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     ),
     Product(
       id: '5',
       name: 'Coffee Mug',
-      image: 'https://www.bootsphoto.com/cdn/images/t2/fb/T2FBamRuMFZrOWRocWtZRG4yRmVEZVpsSTdRV25qK0dON3czeG1ta1FzcHB2UGlNYWNzR09SYUhScW5MQlNwWnhuaVV3V3A4aXIvZlNBRXduOFU2VTFxSklmOHB1ZCt4L3B0bm5GZjlBREU9.jpg',
+      image:
+          'https://www.bootsphoto.com/cdn/images/t2/fb/T2FBamRuMFZrOWRocWtZRG4yRmVEZVpsSTdRV25qK0dON3czeG1ta1FzcHB2UGlNYWNzR09SYUhScW5MQlNwWnhuaVV3V3A4aXIvZlNBRXduOFU2VTFxSklmOHB1ZCt4L3B0bm5GZjlBREU9.jpg',
+      price: '22.99',
+      size: 'Medium',
+      status: 'active',
+      qrId: 'QR005',
+      category: Category(id: 'cat1', name: 'Drinkware', image: ''),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     ),
     Product(
       id: '6',
       name: 'Summer Hat',
-      image: 'https://images.unsplash.com/photo-1529958030586-3aae4ca485ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8aGF0fHx8fHx8MTcyNDA5MzYxMg&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080',
+      image:
+          'https://images.unsplash.com/photo-1529958030586-3aae4ca485ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8aGF0fHx8fHx8MTcyNDA5MzYxMg&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1080',
+      price: '29.99',
+      size: 'Large',
+      status: 'active',
+      qrId: 'QR006',
+      category: Category(id: 'cat2', name: 'Apparel', image: ''),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     ),
     Product(
       id: '7',
       name: 'Leather Bag',
-      image: 'https://img.freepik.com/free-psd/ladies-purse-3d-rendering-isometric-icon_47987-9664.jpg',
+      image:
+          'https://img.freepik.com/free-psd/ladies-purse-3d-rendering-isometric-icon_47987-9664.jpg',
+      price: '79.99',
+      size: 'Large',
+      status: 'active',
+      qrId: 'QR007',
+      category: Category(id: 'cat3', name: 'Bags', image: ''),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     ),
     Product(
       id: '8',
       name: 'Smart Keychains',
-      image: 'https://img.drz.lazcdn.com/static/bd/p/960bb809ba8e55e7f98971a742723762.jpg_720x720q80.jpg',
+      image:
+          'https://img.drz.lazcdn.com/static/bd/p/960bb809ba8e55e7f98971a742723762.jpg_720x720q80.jpg',
+      price: '14.99',
+      size: 'Small',
+      status: 'active',
+      qrId: 'QR008',
+      category: Category(id: 'cat4', name: 'Accessories', image: ''),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     ),
   ].obs;
 

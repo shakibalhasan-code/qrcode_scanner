@@ -3,15 +3,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/utils/app_colors.dart';
 import 'package:qr_code_inventory/app/views/main/cart/cart_view.dart';
+import 'package:qr_code_inventory/app/core/models/user_model.dart';
 
 class HomeHeaderWidget extends StatelessWidget {
   final String greeting;
   final String userName;
-  
+  final User? userProfile;
+  final bool isLoading;
+
   const HomeHeaderWidget({
     super.key,
     required this.greeting,
     required this.userName,
+    this.userProfile,
+    this.isLoading = false,
   });
 
   @override
@@ -21,42 +26,56 @@ class HomeHeaderWidget extends StatelessWidget {
       child: Row(
         children: [
           // Profile Image
-          CircleAvatar(
-            radius: 24.r,
-            backgroundColor: Colors.grey[300],
-            child: Icon(
-              Icons.person,
-              color: Colors.white,
-              size: 30.w,
-            ),
-          ),
+          _buildProfileAvatar(),
           SizedBox(width: 12.w),
-          
+
           // Greeting and Name
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  greeting,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w400,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      greeting,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    if (userProfile?.isVerified == true) ...[
+                      SizedBox(width: 4.w),
+                      Icon(
+                        Icons.verified,
+                        size: 14.w,
+                        color: Colors.blue,
+                      ),
+                    ],
+                  ],
                 ),
-                Text(
-                  userName,
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primaryText,
-                  ),
-                ),
+                isLoading
+                    ? Container(
+                        height: 18.h,
+                        width: 120.w,
+                        margin: EdgeInsets.symmetric(vertical: 2.h),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                      )
+                    : Text(
+                        userProfile?.displayName ?? userName,
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primaryText,
+                        ),
+                      ),
               ],
             ),
           ),
-          
+
           // Shopping Cart Icon
           GestureDetector(
             onTap: () => Get.to(() => const CartView()),
@@ -66,8 +85,58 @@ class HomeHeaderWidget extends StatelessWidget {
               color: AppColors.primaryText,
             ),
           ),
+          SizedBox(width: 10.w),
+          IconButton(onPressed: () {}, icon: Icon(Icons.qr_code_scanner)),
         ],
       ),
+    );
+  }
+
+  Widget _buildProfileAvatar() {
+    if (isLoading) {
+      return CircleAvatar(
+        radius: 24.r,
+        backgroundColor: Colors.grey[300],
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.grey[400]!),
+        ),
+      );
+    }
+
+    // Check if user has profile image
+    final imageUrl = userProfile?.getFullImageUrl();
+    
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      return CircleAvatar(
+        radius: 24.r,
+        backgroundImage: NetworkImage(imageUrl),
+        backgroundColor: Colors.grey[300],
+        onBackgroundImageError: (exception, stackTrace) {
+          debugPrint('Error loading profile image: $exception');
+        },
+        child: null,
+      );
+    }
+
+    // Use initials or default icon
+    return CircleAvatar(
+      radius: 24.r,
+      backgroundColor: AppColors.accent.withOpacity(0.2),
+      child: userProfile != null
+          ? Text(
+              userProfile!.initials,
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.accent,
+              ),
+            )
+          : Icon(
+              Icons.person,
+              color: AppColors.accent,
+              size: 24.w,
+            ),
     );
   }
 }

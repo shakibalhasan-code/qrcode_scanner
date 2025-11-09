@@ -9,7 +9,7 @@ class SearchResultsWidget extends StatelessWidget {
   final Function(Product) onProductTap;
   final Function(String) onToggleFavorite;
   final bool Function(String) isFavorite;
-  
+
   const SearchResultsWidget({
     super.key,
     required this.products,
@@ -76,11 +76,7 @@ class SearchResultsWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.search_off,
-              size: 64.w,
-              color: Colors.grey[400],
-            ),
+            Icon(Icons.search_off, size: 64.w, color: Colors.grey[400]),
             SizedBox(height: 16.h),
             Text(
               'No products found',
@@ -93,16 +89,13 @@ class SearchResultsWidget extends StatelessWidget {
             SizedBox(height: 8.h),
             Text(
               'Try searching with different keywords',
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: Colors.grey[500],
-              ),
+              style: TextStyle(fontSize: 14.sp, color: Colors.grey[500]),
             ),
           ],
         ),
       );
     }
-    
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: GridView.builder(
@@ -116,7 +109,7 @@ class SearchResultsWidget extends StatelessWidget {
         itemBuilder: (context, index) {
           final product = products[index];
           final isProductFavorite = isFavorite(product.id);
-          
+
           return GestureDetector(
             onTap: () => onProductTap(product),
             child: Container(
@@ -172,7 +165,7 @@ class SearchResultsWidget extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
+
                   // Product Info
                   Expanded(
                     flex: 2,
@@ -196,7 +189,7 @@ class SearchResultsWidget extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                '\$${product.price?.toStringAsFixed(2) ?? '0.00'}',
+                                '\$${double.tryParse(product.price ?? '0')?.toStringAsFixed(2) ?? '0.00'}',
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
@@ -204,7 +197,10 @@ class SearchResultsWidget extends StatelessWidget {
                                 ),
                               ),
                               Container(
-                                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8.w,
+                                  vertical: 4.h,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.orange.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(12.r),

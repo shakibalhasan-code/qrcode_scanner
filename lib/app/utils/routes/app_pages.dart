@@ -12,6 +12,7 @@ import 'package:qr_code_inventory/app/views/main/dashboard/view/dashboard_view.d
 import 'package:qr_code_inventory/app/views/main/dashboard/bindings/dashboard_binding.dart';
 import 'package:qr_code_inventory/app/views/main/categories/category_list_screen.dart';
 import 'package:qr_code_inventory/app/views/main/categories/bindings/category_binding.dart';
+import 'package:qr_code_inventory/app/views/main/wishlist/wishlist_view.dart';
 
 part 'app_routes.dart';
 
@@ -61,6 +62,11 @@ class AppPages {
       name: _Paths.CATEGORIES,
       page: () => const CategoryListScreen(),
       binding: CategoryBinding(),
+    ),
+    GetPage(
+      name: _Paths.WISHLIST,
+      page: () => const WishlistView(),
+      binding: InitialBinding(),
     ),
   ];
 }

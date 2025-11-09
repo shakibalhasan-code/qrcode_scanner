@@ -9,6 +9,7 @@ class CustomTextField extends StatelessWidget {
   final IconData prefixIcon;
   final IconData? suffixIcon;
   final bool obscureText;
+  final bool readOnly;
   final VoidCallback? onSuffixIconPressed;
 
   const CustomTextField({
@@ -19,6 +20,7 @@ class CustomTextField extends StatelessWidget {
     required this.prefixIcon,
     this.suffixIcon,
     this.obscureText = false,
+    this.readOnly = false,
     this.onSuffixIconPressed,
   });
 
@@ -39,9 +41,10 @@ class CustomTextField extends StatelessWidget {
         TextFormField(
           controller: controller,
           obscureText: obscureText,
+          readOnly: readOnly,
           cursorColor: AppColors.primary,
-          style: const TextStyle(
-            color: AppColors.primaryText,
+          style: TextStyle(
+            color: readOnly ? AppColors.secondaryText : AppColors.primaryText,
             fontSize: 16,
             fontWeight: FontWeight.normal,
           ), // Enhanced text style

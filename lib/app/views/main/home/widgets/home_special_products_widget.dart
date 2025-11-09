@@ -180,7 +180,8 @@ class HomeSpecialProductsWidget extends StatelessWidget {
                                             ),
                                             SizedBox(width: 2.w),
                                             Text(
-                                              '4.8', // Default rating since we removed it from Product model
+                                              product.effectiveRating
+                                                  .toStringAsFixed(1),
                                               style: TextStyle(
                                                 fontSize: 12.sp,
                                                 fontWeight: FontWeight.w500,

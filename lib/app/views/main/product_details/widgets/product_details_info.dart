@@ -5,10 +5,7 @@ import 'package:qr_code_inventory/app/core/models/product_model.dart';
 class ProductDetailsInfo extends StatelessWidget {
   final Product product;
 
-  const ProductDetailsInfo({
-    super.key,
-    required this.product,
-  });
+  const ProductDetailsInfo({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +25,10 @@ class ProductDetailsInfo extends StatelessWidget {
           SizedBox(height: 8.h),
           Row(
             children: [
-              Icon(
-                Icons.star,
-                size: 16.w,
-                color: Colors.orange,
-              ),
+              Icon(Icons.star, size: 16.w, color: Colors.orange),
               SizedBox(width: 4.w),
               Text(
-                '4.8',
+                product.effectiveRating.toStringAsFixed(1),
                 style: TextStyle(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
@@ -43,26 +36,33 @@ class ProductDetailsInfo extends StatelessWidget {
                 ),
               ),
               Text(
-                '(10k+ Review)',
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: Colors.grey[600],
-                ),
+                '(${_getReviewText()})',
+                style: TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
               ),
             ],
           ),
           SizedBox(height: 16.h),
-          if (product.price != null)
-            Text(
-              '\$${product.price!.toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: 28.sp,
-                fontWeight: FontWeight.w700,
-                color: Colors.black,
-              ),
+          Text(
+            product.getFormattedPrice(),
+            style: TextStyle(
+              fontSize: 28.sp,
+              fontWeight: FontWeight.w700,
+              color: Colors.black,
             ),
+          ),
         ],
       ),
     );
+  }
+
+  String _getReviewText() {
+    final totalReviews = product.totalReviews;
+    if (totalReviews == 0) {
+      return 'No Reviews';
+    } else if (totalReviews >= 1000) {
+      return '${(totalReviews / 1000).toStringAsFixed(1)}k+ Reviews';
+    } else {
+      return '$totalReviews Review${totalReviews > 1 ? 's' : ''}';
+    }
   }
 }

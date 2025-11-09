@@ -31,11 +31,7 @@ class _ImagePickerDemoScreenState extends State<ImagePickerDemoScreen> {
               color: Colors.grey[100],
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.arrow_back,
-              size: 20.w,
-              color: Colors.black,
-            ),
+            child: Icon(Icons.arrow_back, size: 20.w, color: Colors.black),
           ),
         ),
         title: Text(
@@ -53,52 +49,52 @@ class _ImagePickerDemoScreenState extends State<ImagePickerDemoScreen> {
         child: Column(
           children: [
             SizedBox(height: 40.h),
-            
+
             // Image Display
             Container(
               width: 200.w,
               height: 200.w,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: AppColors.primary.withOpacity(0.3),
+                  color: AppColors.primary.withValues(alpha: 0.3),
                   width: 2.w,
                 ),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: selectedImage != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(10.r),
-                    child: Image.file(
-                      selectedImage!,
-                      fit: BoxFit.cover,
-                      width: 200.w,
-                      height: 200.w,
-                    ),
-                  )
-                : Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.image_outlined,
-                          size: 48.w,
-                          color: Colors.grey[400],
-                        ),
-                        SizedBox(height: 8.h),
-                        Text(
-                          'No image selected',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            color: Colors.grey[600],
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(10.r),
+                      child: Image.file(
+                        selectedImage!,
+                        fit: BoxFit.cover,
+                        width: 200.w,
+                        height: 200.w,
+                      ),
+                    )
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.image_outlined,
+                            size: 48.w,
+                            color: Colors.grey[400],
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 8.h),
+                          Text(
+                            'No image selected',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
             ),
-            
+
             SizedBox(height: 40.h),
-            
+
             // Select Image Button
             PrimaryButton(
               text: 'Select Image',
@@ -112,18 +108,18 @@ class _ImagePickerDemoScreenState extends State<ImagePickerDemoScreen> {
                 );
               },
             ),
-            
+
             SizedBox(height: 20.h),
-            
+
             // Info Text
             if (selectedImage != null) ...[
               Container(
                 padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
+                  color: Colors.green.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8.r),
                   border: Border.all(
-                    color: Colors.green.withOpacity(0.3),
+                    color: Colors.green.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Column(
@@ -149,18 +145,16 @@ class _ImagePickerDemoScreenState extends State<ImagePickerDemoScreen> {
                 ),
               ),
             ],
-            
+
             const Spacer(),
-            
+
             // Instructions
             Container(
               padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
+                color: Colors.blue.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(
-                  color: Colors.blue.withOpacity(0.3),
-                ),
+                border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
               ),
               child: Column(
                 children: [
@@ -196,7 +190,7 @@ class _ImagePickerDemoScreenState extends State<ImagePickerDemoScreen> {
                 ],
               ),
             ),
-            
+
             SizedBox(height: 20.h),
           ],
         ),
