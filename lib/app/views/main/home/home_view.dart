@@ -24,12 +24,14 @@ class HomeView extends StatelessWidget {
 
               // Header Section
               GetBuilder<HomeController>(
-                builder: (controller) => Obx(() => HomeHeaderWidget(
-                  greeting: controller.greeting.value,
-                  userName: controller.userName.value,
-                  userProfile: controller.userProfile.value,
-                  isLoading: controller.isUserLoading.value,
-                )),
+                builder: (controller) => Obx(
+                  () => HomeHeaderWidget(
+                    greeting: controller.greeting.value,
+                    userName: controller.userName.value,
+                    userProfile: controller.userProfile.value,
+                    isLoading: controller.isUserLoading.value,
+                  ),
+                ),
               ),
 
               SizedBox(height: 16.h),

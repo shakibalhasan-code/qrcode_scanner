@@ -18,7 +18,7 @@ class ProfileController extends GetxController {
   // Services
   late UserService userService;
   late TokenStorage tokenStorage;
-  
+
   // User information
   final userProfile = Rxn<User>();
   final userName = 'User'.obs;
@@ -101,7 +101,7 @@ class ProfileController extends GetxController {
         if (image != null) {
           // Update local image immediately for UI feedback
           selectedProfileImage.value = image;
-          
+
           // Upload image to API immediately
           await _uploadProfileImageToApi(image);
         } else {
@@ -116,32 +116,32 @@ class ProfileController extends GetxController {
   // Upload profile image to API immediately when selected
   Future<void> _uploadProfileImageToApi(File image) async {
     debugPrint('📸 Uploading profile image to API immediately');
-    
+
     try {
       isUpdatingProfile.value = true;
-      
+
       final token = tokenStorage.getAccessToken();
       if (token == null) {
         throw Exception('No authentication token found');
       }
-      
+
       // Upload only the image, no other data changes
       final response = await userService.updateUserProfile(
         token: token,
         userData: {}, // Empty data, only uploading image
         profileImage: image,
       );
-      
+
       if (response.success) {
         // Update local state with API response
         userProfile.value = response.data;
         userAvatar.value = response.data.getFullImageUrl() ?? '';
-        
+
         debugPrint('✅ Profile image uploaded successfully');
-        
+
         // Update storage with latest data
         await tokenStorage.saveUserData(response.data.toJson());
-        
+
         Get.snackbar(
           'Success',
           'Profile photo updated successfully',
@@ -154,10 +154,10 @@ class ProfileController extends GetxController {
       }
     } catch (e) {
       debugPrint('💥 Exception in _uploadProfileImageToApi: $e');
-      
+
       // Revert local image change on failure
       selectedProfileImage.value = null;
-      
+
       Get.snackbar(
         'Error',
         'Failed to update profile photo: ${e.toString()}',
@@ -173,32 +173,32 @@ class ProfileController extends GetxController {
   // Remove profile image from API
   Future<void> _removeProfileImageFromApi() async {
     debugPrint('🗑️ Removing profile image from API');
-    
+
     try {
       isUpdatingProfile.value = true;
-      
+
       final token = tokenStorage.getAccessToken();
       if (token == null) {
         throw Exception('No authentication token found');
       }
-      
+
       // Send request to remove image (this depends on your API implementation)
       // You might need to send an empty image field or a specific flag
       final response = await userService.updateUserProfileData(
         token: token,
         userData: {'image': ''}, // Set image to empty string to remove
       );
-      
+
       if (response.success) {
         // Update local state
         userProfile.value = response.data;
         userAvatar.value = '';
-        
+
         debugPrint('✅ Profile image removed successfully');
-        
+
         // Update storage
         await tokenStorage.saveUserData(response.data.toJson());
-        
+
         Get.snackbar(
           'Removed',
           'Profile photo removed successfully',
@@ -230,44 +230,45 @@ class ProfileController extends GetxController {
     String? phone,
   }) async {
     debugPrint('👤 Updating user profile data in ProfileController');
-    
+
     try {
       isUpdatingProfile.value = true;
-      
+
       final token = tokenStorage.getAccessToken();
       if (token == null) {
         throw Exception('No authentication token found');
       }
-      
+
       // Prepare update data
       Map<String, dynamic> updateData = {};
       if (name != null && name.isNotEmpty) updateData['name'] = name;
       if (email != null && email.isNotEmpty) updateData['email'] = email;
       if (phone != null && phone.isNotEmpty) updateData['phone'] = phone;
-      
+
       if (updateData.isEmpty) {
         throw Exception('No data to update');
       }
-      
+
       debugPrint('📝 Update data: $updateData');
-      
+
       final response = await userService.updateUserProfileData(
         token: token,
         userData: updateData,
       );
-      
+
       if (response.success) {
         // Update local state
         userProfile.value = response.data;
         userName.value = response.data.displayName;
         userEmail.value = response.data.email;
-        userPhone.value = phone ?? ''; // API doesn't return phone, keep local value
-        
+        userPhone.value =
+            phone ?? ''; // API doesn't return phone, keep local value
+
         debugPrint('✅ User profile data updated successfully');
-        
+
         // Update storage with latest data
         await tokenStorage.saveUserData(response.data.toJson());
-        
+
         Get.snackbar(
           'Success',
           'Profile updated successfully',
@@ -300,57 +301,58 @@ class ProfileController extends GetxController {
     File? profileImage,
   }) async {
     debugPrint('👤 Updating user profile with image in ProfileController');
-    
+
     try {
       isUpdatingProfile.value = true;
-      
+
       final token = tokenStorage.getAccessToken();
       if (token == null) {
         throw Exception('No authentication token found');
       }
-      
+
       // Prepare update data
       Map<String, dynamic> updateData = {};
       if (name != null && name.isNotEmpty) updateData['name'] = name;
       if (email != null && email.isNotEmpty) updateData['email'] = email;
       if (phone != null && phone.isNotEmpty) updateData['phone'] = phone;
-      
+
       if (updateData.isEmpty && profileImage == null) {
         throw Exception('No data or image to update');
       }
-      
+
       debugPrint('📝 Update data: $updateData');
       debugPrint('🖼️ Has image: ${profileImage != null}');
-      
+
       final response = await userService.updateUserProfile(
         token: token,
         userData: updateData,
         profileImage: profileImage,
       );
-      
+
       if (response.success) {
         // Update local state
         userProfile.value = response.data;
         userName.value = response.data.displayName;
         userEmail.value = response.data.email;
-        userPhone.value = phone ?? ''; // API doesn't return phone, keep local value
-        
+        userPhone.value =
+            phone ?? ''; // API doesn't return phone, keep local value
+
         // Update avatar if image was uploaded
         if (profileImage != null) {
           userAvatar.value = response.data.getFullImageUrl() ?? '';
           selectedProfileImage.value = profileImage; // Keep selected image
         }
-        
+
         debugPrint('✅ User profile with image updated successfully');
-        
+
         // Update storage with latest data
         await tokenStorage.saveUserData(response.data.toJson());
-        
+
         Get.snackbar(
           'Success',
-          profileImage != null 
-            ? 'Profile and photo updated successfully' 
-            : 'Profile updated successfully',
+          profileImage != null
+              ? 'Profile and photo updated successfully'
+              : 'Profile updated successfully',
           backgroundColor: Colors.green.withOpacity(0.1),
           colorText: Colors.green,
           duration: const Duration(seconds: 2),
@@ -386,11 +388,7 @@ class ProfileController extends GetxController {
         profileImage: selectedProfileImage.value,
       );
     } else {
-      await updateUserInfo(
-        name: name,
-        email: email,
-        phone: phone,
-      );
+      await updateUserInfo(name: name, email: email, phone: phone);
     }
   }
 
@@ -426,10 +424,7 @@ class ProfileController extends GetxController {
           'Are you sure you want to permanently delete your account? This action cannot be undone.',
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           TextButton(
             onPressed: () {
               Get.back();
@@ -451,7 +446,7 @@ class ProfileController extends GetxController {
       backgroundColor: Colors.red.withOpacity(0.1),
       colorText: Colors.red,
     );
-    
+
     // Navigate to login screen
     Get.offAll(() => const LoginScreen());
   }
@@ -462,10 +457,7 @@ class ProfileController extends GetxController {
         title: const Text('Logout'),
         content: const Text('Are you sure you want to logout?'),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           TextButton(
             onPressed: () {
               Get.back();
@@ -485,7 +477,7 @@ class ProfileController extends GetxController {
       'You have been logged out successfully',
       duration: const Duration(seconds: 2),
     );
-    
+
     // Navigate to login screen
     Get.offAll(() => const LoginScreen());
   }
@@ -503,27 +495,30 @@ class ProfileController extends GetxController {
   // Load user profile from API
   Future<void> loadUserProfile() async {
     debugPrint('👤 Loading user profile from API in ProfileController');
-    
+
     try {
       isLoadingProfile.value = true;
-      
+
       final token = tokenStorage.getAccessToken();
       if (token == null) {
         debugPrint('❌ No token found for loading user profile');
         _loadUserFromStorage();
         return;
       }
-      
+
       final response = await userService.getUserProfile(token: token);
-      
+
       if (response.success) {
         userProfile.value = response.data;
         userName.value = response.data.displayName;
         userEmail.value = response.data.email;
-        userPhone.value = ''; // API doesn't return phone, keep empty or add to model
-        
-        debugPrint('✅ User profile loaded in ProfileController: ${userName.value}');
-        
+        userPhone.value =
+            ''; // API doesn't return phone, keep empty or add to model
+
+        debugPrint(
+          '✅ User profile loaded in ProfileController: ${userName.value}',
+        );
+
         // Update storage with latest data
         await tokenStorage.saveUserData(response.data.toJson());
       } else {
@@ -545,7 +540,7 @@ class ProfileController extends GetxController {
       if (userData != null) {
         userName.value = userData['name'] ?? 'User';
         userEmail.value = userData['email'] ?? '';
-        
+
         // Try to create User object from stored data
         try {
           userProfile.value = User.fromJson(userData);
@@ -559,7 +554,7 @@ class ProfileController extends GetxController {
       debugPrint('💥 Error loading user info from storage: $e');
     }
   }
-  
+
   // Method to refresh user profile
   Future<void> refreshUserProfile() async {
     await loadUserProfile();
@@ -567,10 +562,14 @@ class ProfileController extends GetxController {
 
   void _initializeMenuHandlers() {
     profileMenuItems[0] = profileMenuItems[0].copyWith(onTap: onEditProfile);
-    profileMenuItems[1] = profileMenuItems[1].copyWith(onTap: onNotificationSettings);
+    profileMenuItems[1] = profileMenuItems[1].copyWith(
+      onTap: onNotificationSettings,
+    );
     profileMenuItems[2] = profileMenuItems[2].copyWith(onTap: onWishlist);
     profileMenuItems[3] = profileMenuItems[3].copyWith(onTap: onPrivacyPolicy);
-    profileMenuItems[4] = profileMenuItems[4].copyWith(onTap: onTermsAndConditions);
+    profileMenuItems[4] = profileMenuItems[4].copyWith(
+      onTap: onTermsAndConditions,
+    );
     profileMenuItems[5] = profileMenuItems[5].copyWith(onTap: onHelpSupport);
     profileMenuItems[6] = profileMenuItems[6].copyWith(onTap: onFAQ);
     profileMenuItems[7] = profileMenuItems[7].copyWith(onTap: onDeleteAccount);

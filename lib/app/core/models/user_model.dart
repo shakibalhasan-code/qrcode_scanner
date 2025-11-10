@@ -47,7 +47,7 @@ class User {
 
   // Helper methods
   String get displayName => name.isNotEmpty ? name : 'User';
-  
+
   String get initials {
     if (name.isEmpty) return 'U';
     final parts = name.trim().split(' ');
@@ -63,8 +63,18 @@ class User {
 
   String get formattedJoinDate {
     final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[createdAt.month - 1]} ${createdAt.year}';
   }
@@ -137,10 +147,6 @@ class UserProfileResponse {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'success': success,
-      'message': message,
-      'data': data.toJson(),
-    };
+    return {'success': success, 'message': message, 'data': data.toJson()};
   }
 }

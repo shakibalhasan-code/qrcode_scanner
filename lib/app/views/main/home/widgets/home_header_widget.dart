@@ -46,11 +46,7 @@ class HomeHeaderWidget extends StatelessWidget {
                     ),
                     if (userProfile?.isVerified == true) ...[
                       SizedBox(width: 4.w),
-                      Icon(
-                        Icons.verified,
-                        size: 14.w,
-                        color: Colors.blue,
-                      ),
+                      Icon(Icons.verified, size: 14.w, color: Colors.blue),
                     ],
                   ],
                 ),
@@ -106,7 +102,7 @@ class HomeHeaderWidget extends StatelessWidget {
 
     // Check if user has profile image
     final imageUrl = userProfile?.getFullImageUrl();
-    
+
     if (imageUrl != null && imageUrl.isNotEmpty) {
       return CircleAvatar(
         radius: 24.r,
@@ -132,11 +128,7 @@ class HomeHeaderWidget extends StatelessWidget {
                 color: AppColors.accent,
               ),
             )
-          : Icon(
-              Icons.person,
-              color: AppColors.accent,
-              size: 24.w,
-            ),
+          : Icon(Icons.person, color: AppColors.accent, size: 24.w),
     );
   }
 }

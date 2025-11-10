@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_inventory/app/utils/app_colors.dart';
 
-
 class CustomTextField extends StatelessWidget {
   final String label;
   final String hint;
@@ -66,15 +65,24 @@ class CustomTextField extends StatelessWidget {
             contentPadding: const EdgeInsets.symmetric(vertical: 16),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.textFieldBorder, width: 1.0),
+              borderSide: const BorderSide(
+                color: AppColors.textFieldBorder,
+                width: 1.0,
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.textFieldBorder, width: 1.0),
+              borderSide: const BorderSide(
+                color: AppColors.textFieldBorder,
+                width: 1.0,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+              borderSide: const BorderSide(
+                color: AppColors.primary,
+                width: 1.5,
+              ),
             ),
           ),
         ),

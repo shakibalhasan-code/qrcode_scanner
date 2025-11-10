@@ -286,10 +286,10 @@ class HomeController extends GetxController {
   // Load user profile from API
   Future<void> loadUserProfile() async {
     debugPrint('👤 Loading user profile from API');
-    
+
     try {
       isUserLoading.value = true;
-      
+
       final token = tokenStorage.getAccessToken();
       if (token == null) {
         debugPrint('❌ No token found for loading user profile');
@@ -297,17 +297,17 @@ class HomeController extends GetxController {
         _loadUserFromStorage();
         return;
       }
-      
+
       final response = await userService.getUserProfile(token: token);
-      
+
       if (response.success) {
         userProfile.value = response.data;
         userName.value = response.data.displayName;
         debugPrint('✅ User profile loaded: ${userName.value}');
-        
+
         // Update storage with latest data
         await tokenStorage.saveUserData(response.data.toJson());
-        
+
         update(); // Notify GetBuilder to rebuild
       } else {
         throw Exception(response.message);
@@ -346,7 +346,7 @@ class HomeController extends GetxController {
       userName.value = 'User';
     }
   }
-  
+
   // Method to refresh user profile
   Future<void> refreshUserProfile() async {
     await loadUserProfile();

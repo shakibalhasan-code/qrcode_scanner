@@ -12,9 +12,7 @@ class UserService extends GetxService {
   final http.Client _httpClient = http.Client();
 
   // Get user profile
-  Future<UserProfileResponse> getUserProfile({
-    required String token,
-  }) async {
+  Future<UserProfileResponse> getUserProfile({required String token}) async {
     debugPrint('🚀 UserService.getUserProfile() called');
     debugPrint('🔗 URL: ${ApiEndpoints.getUserProfile}');
 
@@ -38,8 +36,8 @@ class UserService extends GetxService {
         debugPrint('❌ Failed to get user profile: ${response.statusCode}');
         final errorData = jsonDecode(response.body);
         throw Exception(
-          errorData['message'] ?? 
-          'Failed to get user profile: ${response.statusCode}',
+          errorData['message'] ??
+              'Failed to get user profile: ${response.statusCode}',
         );
       }
     } catch (e) {
@@ -84,7 +82,7 @@ class UserService extends GetxService {
         // Get mime type
         final mimeType = lookupMimeType(profileImage.path) ?? 'image/jpeg';
         final mimeTypeData = mimeType.split('/');
-        
+
         debugPrint('🎨 Image MIME Type: $mimeType');
         debugPrint('📁 Image Path: ${profileImage.path}');
 
@@ -113,8 +111,8 @@ class UserService extends GetxService {
         debugPrint('❌ Failed to update user profile: ${response.statusCode}');
         final errorData = jsonDecode(response.body);
         throw Exception(
-          errorData['message'] ?? 
-          'Failed to update user profile: ${response.statusCode}',
+          errorData['message'] ??
+              'Failed to update user profile: ${response.statusCode}',
         );
       }
     } catch (e) {
@@ -150,11 +148,13 @@ class UserService extends GetxService {
         debugPrint('✅ User profile data updated successfully');
         return UserProfileResponse.fromJson(responseData);
       } else {
-        debugPrint('❌ Failed to update user profile data: ${response.statusCode}');
+        debugPrint(
+          '❌ Failed to update user profile data: ${response.statusCode}',
+        );
         final errorData = jsonDecode(response.body);
         throw Exception(
-          errorData['message'] ?? 
-          'Failed to update user profile data: ${response.statusCode}',
+          errorData['message'] ??
+              'Failed to update user profile data: ${response.statusCode}',
         );
       }
     } catch (e) {
