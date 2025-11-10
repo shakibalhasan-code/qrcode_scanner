@@ -4,6 +4,7 @@ import 'package:qr_code_inventory/app/core/models/product_model.dart';
 import 'package:qr_code_inventory/app/core/services/product_service.dart';
 import 'package:qr_code_inventory/app/core/services/wishlist_service.dart';
 import 'package:qr_code_inventory/app/core/services/token_storage.dart';
+import 'package:qr_code_inventory/app/core/services/cart_service.dart';
 import 'package:qr_code_inventory/app/views/main/cart/cart_view.dart';
 
 class ProductDetailsController extends GetxController {
@@ -11,6 +12,7 @@ class ProductDetailsController extends GetxController {
   final ProductService _productService = Get.find<ProductService>();
   final WishlistService _wishlistService = Get.find<WishlistService>();
   final TokenStorage _tokenStorage = Get.find<TokenStorage>();
+  final CartService _cartService = Get.find<CartService>();
 
   final isFavorite = false.obs;
   final quantity = 1.obs;
@@ -19,6 +21,7 @@ class ProductDetailsController extends GetxController {
   final hasError = false.obs;
   final errorMessage = ''.obs;
   final isWishlistLoading = false.obs;
+  final isAddingToCart = false.obs;
 
   String? productId;
 
@@ -197,7 +200,58 @@ class ProductDetailsController extends GetxController {
   }
 
   void addToCart() {
-    Get.to(() => const CartView());
+    if (product == null) {
+      Get.snackbar(
+        'Error',
+        'Product information not available',
+        backgroundColor: Colors.red.withOpacity(0.1),
+        colorText: Colors.red,
+      );
+      return;
+    }
+
+    isAddingToCart.value = true;
+
+    try {
+      // Add product to cart with selected quantity
+      final success = _cartService.addToCart(
+        product!,
+        quantity: quantity.value,
+        selectedSize: null, // You can add size selection logic here
+        selectedColor: null, // You can add color selection logic here
+      );
+
+      if (success) {
+        // Show success message and option to go to cart
+        Get.snackbar(
+          'Added to Cart',
+          '${product!.name} has been added to your cart',
+          backgroundColor: Colors.green.withOpacity(0.1),
+          colorText: Colors.green,
+          duration: const Duration(seconds: 3),
+          mainButton: TextButton(
+            onPressed: () {
+              Get.back(); // Close snackbar
+              Get.to(() => const CartView());
+            },
+            child: const Text(
+              'View Cart',
+              style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Error adding to cart: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to add product to cart',
+        backgroundColor: Colors.red.withOpacity(0.1),
+        colorText: Colors.red,
+      );
+    } finally {
+      isAddingToCart.value = false;
+    }
   }
 
   void onBackPressed() {
@@ -212,5 +266,16 @@ class ProductDetailsController extends GetxController {
         duration: const Duration(seconds: 1),
       );
     }
+  }
+
+  // Check if current product is in cart
+  bool get isProductInCart {
+    if (product == null) return false;
+    return _cartService.isProductInCart(product!.id);
+  }
+
+  // Get cart items count for badge
+  int get cartItemsCount {
+    return _cartService.totalItems;
   }
 }

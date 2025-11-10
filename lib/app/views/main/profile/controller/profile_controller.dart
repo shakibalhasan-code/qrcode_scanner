@@ -45,12 +45,7 @@ class ProfileController extends GetxController {
       subtitle: 'Notification preferences',
       onTap: null,
     ),
-    ProfileMenuItem(
-      icon: Icons.favorite_outline,
-      title: 'Wishlist/Favourite',
-      subtitle: 'Your saved items',
-      onTap: null,
-    ),
+
     ProfileMenuItem(
       icon: Icons.policy_outlined,
       title: 'Privacy Policy',
@@ -565,15 +560,14 @@ class ProfileController extends GetxController {
     profileMenuItems[1] = profileMenuItems[1].copyWith(
       onTap: onNotificationSettings,
     );
-    profileMenuItems[2] = profileMenuItems[2].copyWith(onTap: onWishlist);
-    profileMenuItems[3] = profileMenuItems[3].copyWith(onTap: onPrivacyPolicy);
-    profileMenuItems[4] = profileMenuItems[4].copyWith(
+    profileMenuItems[2] = profileMenuItems[2].copyWith(onTap: onPrivacyPolicy);
+    profileMenuItems[3] = profileMenuItems[3].copyWith(
       onTap: onTermsAndConditions,
     );
-    profileMenuItems[5] = profileMenuItems[5].copyWith(onTap: onHelpSupport);
-    profileMenuItems[6] = profileMenuItems[6].copyWith(onTap: onFAQ);
-    profileMenuItems[7] = profileMenuItems[7].copyWith(onTap: onDeleteAccount);
-    profileMenuItems[8] = profileMenuItems[8].copyWith(onTap: onLogout);
+    profileMenuItems[4] = profileMenuItems[4].copyWith(onTap: onHelpSupport);
+    profileMenuItems[5] = profileMenuItems[5].copyWith(onTap: onFAQ);
+    profileMenuItems[6] = profileMenuItems[6].copyWith(onTap: onDeleteAccount);
+    profileMenuItems[7] = profileMenuItems[7].copyWith(onTap: onLogout);
   }
 }
 

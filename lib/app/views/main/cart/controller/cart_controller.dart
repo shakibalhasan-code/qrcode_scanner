@@ -1,69 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/core/models/cart_item_model.dart';
+import 'package:qr_code_inventory/app/core/services/cart_service.dart';
 
 class CartController extends GetxController {
-  final RxList<CartItem> cartItems = <CartItem>[
-    // Sample cart items matching the design
-    CartItem(
-      id: '1',
-      productId: 'product_1',
-      name: 'Apple Magic Mouse 2 – Wirel...',
-      image: 'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=500',
-      size: '-',
-      color: 'White',
-      price: 79.00,
-      quantity: 1,
-      isSelected: true,
-    ),
-    CartItem(
-      id: '2',
-      productId: 'product_2',
-      name: 'Smart Tag Keychains 2 – Pack of 2',
-      image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500',
-      size: 'L',
-      color: 'Dusty Blue',
-      price: 19.90,
-      quantity: 1,
-      isSelected: false,
-    ),
-    CartItem(
-      id: '3',
-      productId: 'product_3',
-      name: 'Logitech MX Master 3S – Perf...',
-      image: 'https://images.unsplash.com/photo-1527814050087-3793815479db?w=500',
-      size: '-',
-      color: 'Graphite',
-      price: 89.99,
-      quantity: 2,
-      isSelected: true,
-    ),
-    CartItem(
-      id: '4',
-      productId: 'product_4',
-      name: 'COS Relaxed Fit Cotton...',
-      image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500',
-      size: 'M',
-      color: 'Soft Beige',
-      price: 65.00,
-      quantity: 1,
-      isSelected: true,
-    ),
-  ].obs;
+  final CartService _cartService = Get.find<CartService>();
 
   final RxBool isSelectAll = false.obs;
   final RxBool showDeleteDialog = false.obs;
   final Rx<CartItem?> itemToDelete = Rx<CartItem?>(null);
 
-  // Getters
-  List<CartItem> get selectedItems => cartItems.where((item) => item.isSelected).toList();
-  
-  int get selectedItemsCount => selectedItems.length;
-  
-  int get totalItemsCount => cartItems.length;
-  
-  double get totalAmount => selectedItems.fold(0.0, (sum, item) => sum + item.totalPrice);
-
+  // Getters that delegate to CartService
+  List<CartItem> get cartItems => _cartService.cartItems;
+  List<CartItem> get selectedItems => _cartService.selectedItems;
+  int get selectedItemsCount => _cartService.selectedItemsCount;
+  int get totalItemsCount => _cartService.totalItems;
+  double get totalAmount => _cartService.totalAmount;
   bool get hasSelectedItems => selectedItems.isNotEmpty;
 
   void onBackPressed() {
@@ -71,23 +23,17 @@ class CartController extends GetxController {
   }
 
   void toggleSelectAll() {
-    isSelectAll.value = !isSelectAll.value;
-    for (int i = 0; i < cartItems.length; i++) {
-      cartItems[i] = cartItems[i].copyWith(isSelected: isSelectAll.value);
+    if (isSelectAll.value) {
+      _cartService.deselectAllItems();
+    } else {
+      _cartService.selectAllItems();
     }
-    cartItems.refresh();
     _updateSelectAllState();
   }
 
   void toggleItemSelection(String itemId) {
-    final index = cartItems.indexWhere((item) => item.id == itemId);
-    if (index != -1) {
-      cartItems[index] = cartItems[index].copyWith(
-        isSelected: !cartItems[index].isSelected,
-      );
-      cartItems.refresh();
-      _updateSelectAllState();
-    }
+    _cartService.toggleItemSelection(itemId);
+    _updateSelectAllState();
   }
 
   void _updateSelectAllState() {
@@ -109,22 +55,14 @@ class CartController extends GetxController {
   }
 
   void increaseQuantity(String itemId) {
-    final index = cartItems.indexWhere((item) => item.id == itemId);
-    if (index != -1) {
-      cartItems[index] = cartItems[index].copyWith(
-        quantity: cartItems[index].quantity + 1,
-      );
-      cartItems.refresh();
-    }
+    final item = cartItems.firstWhere((item) => item.id == itemId);
+    _cartService.updateQuantity(itemId, item.quantity + 1);
   }
 
   void decreaseQuantity(String itemId) {
-    final index = cartItems.indexWhere((item) => item.id == itemId);
-    if (index != -1 && cartItems[index].quantity > 1) {
-      cartItems[index] = cartItems[index].copyWith(
-        quantity: cartItems[index].quantity - 1,
-      );
-      cartItems.refresh();
+    final item = cartItems.firstWhere((item) => item.id == itemId);
+    if (item.quantity > 1) {
+      _cartService.updateQuantity(itemId, item.quantity - 1);
     }
   }
 
@@ -140,18 +78,9 @@ class CartController extends GetxController {
 
   void deleteItem() {
     if (itemToDelete.value != null) {
-      cartItems.removeWhere((item) => item.id == itemToDelete.value!.id);
+      _cartService.removeFromCart(itemToDelete.value!.id);
       hideDeleteDialog();
       _updateSelectAllState();
-      
-      Get.snackbar(
-        'Removed',
-        'Item removed from cart',
-        duration: const Duration(seconds: 2),
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
     }
   }
 
@@ -190,6 +119,23 @@ class CartController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // Listen to cart changes and update select all state
+    ever(_cartService.cartItems, (_) => _updateSelectAllState());
     _updateSelectAllState();
   }
+
+  // Add additional utility methods
+  void clearCart() {
+    _cartService.clearCart();
+    _updateSelectAllState();
+  }
+
+  // Calculate delivery fee (this could be dynamic based on location, etc.)
+  double get deliveryFee => totalAmount > 100 ? 0.0 : 5.99;
+
+  // Calculate total with delivery
+  double get totalWithDelivery => totalAmount + deliveryFee;
+
+  // Check if delivery is free
+  bool get isFreeDelivery => deliveryFee == 0.0;
 }

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/utils/app_colors.dart';
 import 'package:qr_code_inventory/app/views/main/cart/cart_view.dart';
 import 'package:qr_code_inventory/app/core/models/user_model.dart';
+import 'package:qr_code_inventory/app/core/services/cart_service.dart';
 
 class HomeHeaderWidget extends StatelessWidget {
   final String greeting;
@@ -72,15 +73,8 @@ class HomeHeaderWidget extends StatelessWidget {
             ),
           ),
 
-          // Shopping Cart Icon
-          GestureDetector(
-            onTap: () => Get.to(() => const CartView()),
-            child: Icon(
-              Icons.shopping_cart_outlined,
-              size: 24.w,
-              color: AppColors.primaryText,
-            ),
-          ),
+          // Shopping Cart Icon with Badge
+          _buildCartIcon(),
           SizedBox(width: 10.w),
           IconButton(onPressed: () {}, icon: Icon(Icons.qr_code_scanner)),
         ],
@@ -129,6 +123,52 @@ class HomeHeaderWidget extends StatelessWidget {
               ),
             )
           : Icon(Icons.person, color: AppColors.accent, size: 24.w),
+    );
+  }
+
+  Widget _buildCartIcon() {
+    final CartService cartService = Get.find<CartService>();
+    
+    return GestureDetector(
+      onTap: () => Get.to(() => const CartView()),
+      child: Stack(
+        children: [
+          Icon(
+            Icons.shopping_cart_outlined,
+            size: 24.w,
+            color: AppColors.primaryText,
+          ),
+          Obx(() {
+            final itemCount = cartService.totalItems;
+            if (itemCount == 0) return const SizedBox.shrink();
+            
+            return Positioned(
+              right: 0,
+              top: 0,
+              child: Container(
+                padding: EdgeInsets.all(2.w),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                constraints: BoxConstraints(
+                  minWidth: 16.w,
+                  minHeight: 16.w,
+                ),
+                child: Text(
+                  itemCount > 99 ? '99+' : itemCount.toString(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          }),
+        ],
+      ),
     );
   }
 }

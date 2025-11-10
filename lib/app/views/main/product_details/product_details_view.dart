@@ -176,8 +176,8 @@ class ProductDetailsView extends StatelessWidget {
               ),
             ],
           ),
-          child: ElevatedButton(
-            onPressed: controller.addToCart,
+          child: Obx(() => ElevatedButton(
+            onPressed: controller.isAddingToCart.value ? null : controller.addToCart,
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFFFD54F),
               padding: EdgeInsets.symmetric(vertical: 16.h),
@@ -186,13 +186,23 @@ class ProductDetailsView extends StatelessWidget {
               ),
               elevation: 0,
             ),
-            child: Text(
-              'Add to Cart',
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: Colors.black,
-                fontWeight: FontWeight.w600,
-              ),
+            child: controller.isAddingToCart.value
+              ? SizedBox(
+                  height: 20.h,
+                  width: 20.w,
+                  child: const CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                  ),
+                )
+              : Text(
+                  'Add to Cart',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
             ),
           ),
         );
