@@ -128,7 +128,7 @@ class HomeHeaderWidget extends StatelessWidget {
 
   Widget _buildCartIcon() {
     final CartService cartService = Get.find<CartService>();
-    
+
     return GestureDetector(
       onTap: () => Get.to(() => const CartView()),
       child: Stack(
@@ -141,7 +141,7 @@ class HomeHeaderWidget extends StatelessWidget {
           Obx(() {
             final itemCount = cartService.totalItems;
             if (itemCount == 0) return const SizedBox.shrink();
-            
+
             return Positioned(
               right: 0,
               top: 0,
@@ -151,10 +151,7 @@ class HomeHeaderWidget extends StatelessWidget {
                   color: Colors.red,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
-                constraints: BoxConstraints(
-                  minWidth: 16.w,
-                  minHeight: 16.w,
-                ),
+                constraints: BoxConstraints(minWidth: 16.w, minHeight: 16.w),
                 child: Text(
                   itemCount > 99 ? '99+' : itemCount.toString(),
                   style: TextStyle(

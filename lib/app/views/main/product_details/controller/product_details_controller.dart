@@ -236,7 +236,10 @@ class ProductDetailsController extends GetxController {
             },
             child: const Text(
               'View Cart',
-              style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         );

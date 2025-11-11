@@ -41,10 +41,10 @@ class CartController extends GetxController {
       isSelectAll.value = false;
       return;
     }
-    
+
     final allSelected = cartItems.every((item) => item.isSelected);
     final noneSelected = cartItems.every((item) => !item.isSelected);
-    
+
     if (allSelected) {
       isSelectAll.value = true;
     } else if (noneSelected) {

@@ -176,33 +176,36 @@ class ProductDetailsView extends StatelessWidget {
               ),
             ],
           ),
-          child: Obx(() => ElevatedButton(
-            onPressed: controller.isAddingToCart.value ? null : controller.addToCart,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFFD54F),
-              padding: EdgeInsets.symmetric(vertical: 16.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25.r),
-              ),
-              elevation: 0,
-            ),
-            child: controller.isAddingToCart.value
-              ? SizedBox(
-                  height: 20.h,
-                  width: 20.w,
-                  child: const CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                  ),
-                )
-              : Text(
-                  'Add to Cart',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                  ),
+          child: Obx(
+            () => ElevatedButton(
+              onPressed: controller.isAddingToCart.value
+                  ? null
+                  : controller.addToCart,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFFD54F),
+                padding: EdgeInsets.symmetric(vertical: 16.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.r),
                 ),
+                elevation: 0,
+              ),
+              child: controller.isAddingToCart.value
+                  ? SizedBox(
+                      height: 20.h,
+                      width: 20.w,
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                      ),
+                    )
+                  : Text(
+                      'Add to Cart',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
             ),
           ),
         );

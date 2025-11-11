@@ -7,7 +7,7 @@ import '../models/product_model.dart';
 class CartService extends GetxService {
   final GetStorage _storage = GetStorage();
   final RxList<CartItem> cartItems = <CartItem>[].obs;
-  
+
   static const String _cartKey = 'cart_items';
 
   @override
@@ -19,7 +19,7 @@ class CartService extends GetxService {
   // Load cart items from storage
   void _loadCartFromStorage() {
     debugPrint('🛒 Loading cart items from storage');
-    
+
     try {
       final List<dynamic>? storedItems = _storage.read(_cartKey);
       if (storedItems != null) {
@@ -39,7 +39,7 @@ class CartService extends GetxService {
   // Save cart items to storage
   void _saveCartToStorage() {
     debugPrint('💾 Saving ${cartItems.length} cart items to storage');
-    
+
     try {
       final List<Map<String, dynamic>> itemsJson = cartItems
           .map((item) => item.toJson())
@@ -52,15 +52,21 @@ class CartService extends GetxService {
   }
 
   // Add product to cart
-  bool addToCart(Product product, {int quantity = 1, String? selectedSize, String? selectedColor}) {
+  bool addToCart(
+    Product product, {
+    int quantity = 1,
+    String? selectedSize,
+    String? selectedColor,
+  }) {
     debugPrint('🛒 Adding product to cart: ${product.name} (qty: $quantity)');
-    
+
     try {
       // Check if product already exists in cart
       final existingItemIndex = cartItems.indexWhere(
-        (item) => item.productId == product.id && 
-                  item.size == selectedSize && 
-                  item.color == selectedColor
+        (item) =>
+            item.productId == product.id &&
+            item.size == selectedSize &&
+            item.color == selectedColor,
       );
 
       if (existingItemIndex != -1) {
@@ -83,13 +89,13 @@ class CartService extends GetxService {
           quantity: quantity,
           isSelected: true,
         );
-        
+
         cartItems.add(cartItem);
         debugPrint('✅ Added new item to cart');
       }
 
       _saveCartToStorage();
-      
+
       Get.snackbar(
         'Added to Cart',
         '${product.name} has been added to your cart',
@@ -102,7 +108,7 @@ class CartService extends GetxService {
       return true;
     } catch (e) {
       debugPrint('💥 Error adding product to cart: $e');
-      
+
       Get.snackbar(
         'Error',
         'Failed to add product to cart: ${e.toString()}',
@@ -110,7 +116,7 @@ class CartService extends GetxService {
         colorText: Colors.red,
         duration: const Duration(seconds: 3),
       );
-      
+
       return false;
     }
   }
@@ -118,15 +124,15 @@ class CartService extends GetxService {
   // Remove item from cart
   bool removeFromCart(String cartItemId) {
     debugPrint('🗑️ Removing item from cart: $cartItemId');
-    
+
     try {
       final itemIndex = cartItems.indexWhere((item) => item.id == cartItemId);
-      
+
       if (itemIndex != -1) {
         final removedItem = cartItems[itemIndex];
         cartItems.removeAt(itemIndex);
         _saveCartToStorage();
-        
+
         Get.snackbar(
           'Removed',
           '${removedItem.name} has been removed from your cart',
@@ -134,7 +140,7 @@ class CartService extends GetxService {
           colorText: Colors.orange,
           duration: const Duration(seconds: 2),
         );
-        
+
         debugPrint('✅ Item removed from cart successfully');
         return true;
       } else {
@@ -149,17 +155,21 @@ class CartService extends GetxService {
 
   // Update item quantity
   bool updateQuantity(String cartItemId, int newQuantity) {
-    debugPrint('📊 Updating quantity for cart item: $cartItemId to $newQuantity');
-    
+    debugPrint(
+      '📊 Updating quantity for cart item: $cartItemId to $newQuantity',
+    );
+
     try {
       if (newQuantity <= 0) {
         return removeFromCart(cartItemId);
       }
 
       final itemIndex = cartItems.indexWhere((item) => item.id == cartItemId);
-      
+
       if (itemIndex != -1) {
-        cartItems[itemIndex] = cartItems[itemIndex].copyWith(quantity: newQuantity);
+        cartItems[itemIndex] = cartItems[itemIndex].copyWith(
+          quantity: newQuantity,
+        );
         _saveCartToStorage();
         debugPrint('✅ Quantity updated successfully');
         return true;
@@ -176,13 +186,15 @@ class CartService extends GetxService {
   // Toggle item selection
   void toggleItemSelection(String cartItemId) {
     debugPrint('🔄 Toggling selection for cart item: $cartItemId');
-    
+
     try {
       final itemIndex = cartItems.indexWhere((item) => item.id == cartItemId);
-      
+
       if (itemIndex != -1) {
         final currentItem = cartItems[itemIndex];
-        cartItems[itemIndex] = currentItem.copyWith(isSelected: !currentItem.isSelected);
+        cartItems[itemIndex] = currentItem.copyWith(
+          isSelected: !currentItem.isSelected,
+        );
         _saveCartToStorage();
         debugPrint('✅ Item selection toggled');
       }
@@ -194,7 +206,7 @@ class CartService extends GetxService {
   // Select all items
   void selectAllItems() {
     debugPrint('✅ Selecting all cart items');
-    
+
     try {
       for (int i = 0; i < cartItems.length; i++) {
         cartItems[i] = cartItems[i].copyWith(isSelected: true);
@@ -208,7 +220,7 @@ class CartService extends GetxService {
   // Deselect all items
   void deselectAllItems() {
     debugPrint('❌ Deselecting all cart items');
-    
+
     try {
       for (int i = 0; i < cartItems.length; i++) {
         cartItems[i] = cartItems[i].copyWith(isSelected: false);
@@ -222,11 +234,11 @@ class CartService extends GetxService {
   // Clear entire cart
   void clearCart() {
     debugPrint('🧹 Clearing entire cart');
-    
+
     try {
       cartItems.clear();
       _saveCartToStorage();
-      
+
       Get.snackbar(
         'Cart Cleared',
         'All items have been removed from your cart',
@@ -272,5 +284,6 @@ class CartService extends GetxService {
   List<CartItem> get items => List.unmodifiable(cartItems);
 
   // Get selected cart items
-  List<CartItem> get selectedItems => cartItems.where((item) => item.isSelected).toList();
+  List<CartItem> get selectedItems =>
+      cartItems.where((item) => item.isSelected).toList();
 }
