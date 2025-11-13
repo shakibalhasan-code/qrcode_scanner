@@ -30,6 +30,12 @@ class ApiEndpoints {
   static const String getUserProfile = '$baseUrl/user/profile';
   static const String updateUserProfile = '$baseUrl/user/update-profile';
 
+  // Notification Endpoints
+  static const String getNotifications =
+      '$baseUrl/notification/get-notification';
+  static const String updateNotification =
+      '$baseUrl/notification/update-notification';
+
   // Image Base URL
   static const String imageBaseUrl = 'http://10.10.12.25:5008';
 

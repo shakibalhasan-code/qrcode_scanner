@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/core/models/wishlist_model.dart';
 import 'package:qr_code_inventory/app/core/services/wishlist_service.dart';
 import 'package:qr_code_inventory/app/core/services/token_storage.dart';
+import 'package:qr_code_inventory/app/views/main/product_details/product_details_view.dart';
 
 class WishlistController extends GetxController {
   final WishlistService _wishlistService = Get.find<WishlistService>();
@@ -94,6 +95,12 @@ class WishlistController extends GetxController {
   }
 
   void navigateToProductDetails(WishlistItem item) {
-    Get.toNamed('/product-details', arguments: item.product);
+    // Navigate to ProductDetailsView with product data
+    Get.to(
+      () => const ProductDetailsView(),
+      arguments: item.product,
+      transition: Transition.rightToLeft,
+      duration: const Duration(milliseconds: 300),
+    );
   }
 }

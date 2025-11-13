@@ -6,6 +6,7 @@ import 'package:qr_code_inventory/app/core/services/product_service.dart';
 import 'package:qr_code_inventory/app/core/services/wishlist_service.dart';
 import 'package:qr_code_inventory/app/core/services/user_service.dart';
 import 'package:qr_code_inventory/app/core/services/cart_service.dart';
+import 'package:qr_code_inventory/app/core/services/notification_service.dart';
 import 'package:qr_code_inventory/app/views/main/dashboard/controller/dashboard_controller.dart';
 import 'package:qr_code_inventory/app/views/main/initial_step/controllers/initial_controller.dart';
 
@@ -26,5 +27,6 @@ class InitialBinding implements Bindings {
     Get.lazyPut<WishlistService>(() => WishlistService(), fenix: true);
     Get.lazyPut<UserService>(() => UserService(), fenix: true);
     Get.lazyPut<CartService>(() => CartService(), fenix: true);
+    Get.lazyPut<NotificationService>(() => NotificationService(), fenix: true);
   }
 }

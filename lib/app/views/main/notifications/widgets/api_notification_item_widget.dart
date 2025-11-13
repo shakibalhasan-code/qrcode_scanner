@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qr_code_inventory/app/core/models/notification_model.dart';
 
-class NotificationItemWidget extends StatelessWidget {
+class ApiNotificationItemWidget extends StatelessWidget {
   final NotificationItem notification;
   final VoidCallback onTap;
 
-  const NotificationItemWidget({
+  const ApiNotificationItemWidget({
     super.key,
     required this.notification,
     required this.onTap,
@@ -21,7 +21,7 @@ class NotificationItemWidget extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Product Image
+            // Product Image or Icon
             Container(
               width: 60.w,
               height: 60.w,
@@ -31,7 +31,7 @@ class NotificationItemWidget extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8.r),
-                child: _buildProductImage(),
+                child: _buildNotificationIcon(),
               ),
             ),
 
@@ -56,20 +56,39 @@ class NotificationItemWidget extends StatelessWidget {
 
                   SizedBox(height: 4.h),
 
-                  // Product Information (if available)
-                  if (notification.product != null)
-                    Row(
-                      children: [
-                        Text(
-                          '\$${notification.product!.price}',
+                  // Notification Type
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.w,
+                          vertical: 2.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _getTypeColor().withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                        child: Text(
+                          notification.type,
                           style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500,
+                            color: _getTypeColor(),
+                          ),
+                        ),
+                      ),
+                      if (notification.product != null) ...[
+                        SizedBox(width: 8.w),
+                        Text(
+                          'Product related',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: Colors.grey[600],
                           ),
                         ),
                       ],
-                    ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -103,36 +122,63 @@ class NotificationItemWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildProductImage() {
-    String? imageUrl = notification.product?.image;
-
-    if (imageUrl != null && imageUrl.isNotEmpty) {
-      // Use the product's helper method to get full URL
-      String fullUrl = notification.product!.getFullImageUrl();
+  Widget _buildNotificationIcon() {
+    if (notification.product?.image != null &&
+        notification.product!.image.isNotEmpty) {
+      // Show product image if available
       return Image.network(
-        fullUrl,
+        notification.product!.getFullImageUrl(),
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
-          return _buildPlaceholder();
+          return _buildDefaultIcon();
         },
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) return child;
-          return _buildPlaceholder();
+          return _buildDefaultIcon();
         },
       );
     } else {
-      return _buildPlaceholder();
+      return _buildDefaultIcon();
     }
   }
 
-  Widget _buildPlaceholder() {
+  Widget _buildDefaultIcon() {
+    IconData iconData;
+    switch (notification.type.toLowerCase()) {
+      case 'offer':
+      case 'promotion':
+        iconData = Icons.local_offer;
+        break;
+      case 'order':
+        iconData = Icons.shopping_bag;
+        break;
+      case 'delivery':
+        iconData = Icons.local_shipping;
+        break;
+      case 'user':
+      default:
+        iconData = Icons.notifications;
+        break;
+    }
+
     return Container(
       color: Colors.grey[200],
-      child: Icon(
-        Icons.image_not_supported,
-        size: 24.w,
-        color: Colors.grey[400],
-      ),
+      child: Icon(iconData, size: 24.w, color: _getTypeColor()),
     );
+  }
+
+  Color _getTypeColor() {
+    switch (notification.type.toLowerCase()) {
+      case 'offer':
+      case 'promotion':
+        return Colors.orange;
+      case 'order':
+        return Colors.blue;
+      case 'delivery':
+        return Colors.green;
+      case 'user':
+      default:
+        return Colors.purple;
+    }
   }
 }

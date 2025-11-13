@@ -33,9 +33,12 @@ class ProductDetailsController extends GetxController {
     final arguments = Get.arguments;
 
     if (arguments is Product) {
-      // If we have a product object, use it and fetch updated details
+      // If we have a product object, use it immediately to show content
       product = arguments;
       productId = product!.id;
+      // Check wishlist status immediately
+      _checkWishlistStatus();
+      // Then fetch updated details in background
       _fetchProductDetails();
     } else if (arguments is String) {
       // If we only have a product ID, fetch the details
@@ -45,17 +48,23 @@ class ProductDetailsController extends GetxController {
       // Handle error case
       hasError.value = true;
       errorMessage.value = 'No product information provided';
+      debugPrint('Error: No product information provided in arguments');
+      return;
     }
 
-    // Check if product is in favorites (you can implement your logic here)
-    isFavorite.value = false; // Default to false for now
+    // Initialize favorite status
+    isFavorite.value =
+        false; // Default to false, will be updated by _checkWishlistStatus
   }
 
   Future<void> _fetchProductDetails() async {
     if (productId == null) return;
 
     try {
-      isLoading.value = true;
+      // Only show loading if we don't have product data already
+      if (product == null) {
+        isLoading.value = true;
+      }
       hasError.value = false;
 
       final token = _tokenStorage.getAccessToken();
@@ -78,17 +87,24 @@ class ProductDetailsController extends GetxController {
       }
     } catch (e) {
       debugPrint('Error fetching product details: $e');
-      hasError.value = true;
-      errorMessage.value = e.toString();
 
-      // Show error snackbar
-      Get.snackbar(
-        'Error',
-        'Failed to load product details: ${e.toString()}',
-        backgroundColor: Colors.red.shade100,
-        colorText: Colors.red.shade800,
-        duration: const Duration(seconds: 3),
-      );
+      // Only show error if we don't have any product data
+      if (product == null) {
+        hasError.value = true;
+        errorMessage.value = e.toString();
+
+        // Show error snackbar
+        Get.snackbar(
+          'Error',
+          'Failed to load product details: ${e.toString()}',
+          backgroundColor: Colors.red.shade100,
+          colorText: Colors.red.shade800,
+          duration: const Duration(seconds: 3),
+        );
+      } else {
+        // We have existing product data, just log the error
+        debugPrint('Failed to refresh product details, using existing data');
+      }
     } finally {
       isLoading.value = false;
     }
