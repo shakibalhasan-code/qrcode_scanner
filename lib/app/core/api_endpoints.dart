@@ -36,6 +36,9 @@ class ApiEndpoints {
   static const String updateNotification =
       '$baseUrl/notification/update-notification';
 
+  // Review Endpoints
+  static const String createReview = '$baseUrl/review/create-review';
+
   // Image Base URL
   static const String imageBaseUrl = 'http://10.10.12.25:5008';
 

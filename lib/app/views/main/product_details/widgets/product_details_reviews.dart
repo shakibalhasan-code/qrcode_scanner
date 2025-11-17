@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/core/models/product_model.dart';
+import 'package:qr_code_inventory/app/views/main/product_details/widgets/write_review_bottom_sheet.dart';
 
 class ProductDetailsReviews extends StatefulWidget {
   final Product? product;
@@ -110,19 +112,28 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
 
           // Reviews List
           if (isExpanded) ...[
-            _buildReviewItem(
-              'Jhon',
-              '20m ago',
-              'I love it. Awesome customer service!! Helped me out with adding an additional item to my order. Thanks again!',
-              5,
-            ),
-            SizedBox(height: 16.h),
-            _buildReviewItem(
-              'Rihana',
-              '30m ago',
-              'I\'m very happy with order. It was delivered on and good quality. Recommended!',
-              5,
-            ),
+            if (widget.product?.ratingStats?.getReviewDetails.isEmpty ?? true)
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24.h),
+                  child: Text(
+                    'No reviews yet',
+                    style: TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
+                  ),
+                ),
+              )
+            else
+              ...widget.product!.ratingStats!.getReviewDetails.map(
+                (reviewDetail) => Padding(
+                  padding: EdgeInsets.only(bottom: 16.h),
+                  child: _buildReviewItem(
+                    reviewDetail.user.name,
+                    reviewDetail.timeAgo,
+                    reviewDetail.review,
+                    reviewDetail.rating,
+                  ),
+                ),
+              ),
           ] else ...[
             Row(
               children: [
@@ -133,7 +144,12 @@ class _ProductDetailsReviewsState extends State<ProductDetailsReviews> {
                 const Spacer(),
                 GestureDetector(
                   onTap: () {
-                    // Handle write review
+                    // Show write review bottom sheet
+                    Get.bottomSheet(
+                      const WriteReviewBottomSheet(),
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                    );
                   },
                   child: Row(
                     children: [

@@ -1,12 +1,93 @@
 // Import category model for nested category
 import 'category_model.dart';
 
+// Review detail user model
+class ReviewUser {
+  final String id;
+  final String name;
+  final String email;
+
+  ReviewUser({required this.id, required this.name, required this.email});
+
+  factory ReviewUser.fromJson(Map<String, dynamic> json) {
+    return ReviewUser(
+      id: json['_id'] ?? '',
+      name: json['name'] ?? 'Anonymous',
+      email: json['email'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'_id': id, 'name': name, 'email': email};
+  }
+}
+
+// Review detail model
+class ReviewDetail {
+  final String id;
+  final int rating;
+  final String review;
+  final ReviewUser user;
+  final DateTime createdAt;
+
+  ReviewDetail({
+    required this.id,
+    required this.rating,
+    required this.review,
+    required this.user,
+    required this.createdAt,
+  });
+
+  factory ReviewDetail.fromJson(Map<String, dynamic> json) {
+    return ReviewDetail(
+      id: json['_id'] ?? '',
+      rating: json['rating'] ?? 0,
+      review: json['review'] ?? '',
+      user: ReviewUser.fromJson(json['user'] ?? {}),
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : DateTime.now(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'rating': rating,
+      'review': review,
+      'user': user.toJson(),
+      'createdAt': createdAt.toIso8601String(),
+    };
+  }
+
+  // Get formatted time ago string
+  String get timeAgo {
+    final difference = DateTime.now().difference(createdAt);
+
+    if (difference.inDays > 365) {
+      final years = (difference.inDays / 365).floor();
+      return '${years}y ago';
+    } else if (difference.inDays > 30) {
+      final months = (difference.inDays / 30).floor();
+      return '${months}mo ago';
+    } else if (difference.inDays > 0) {
+      return '${difference.inDays}d ago';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours}h ago';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes}m ago';
+    } else {
+      return 'Just now';
+    }
+  }
+}
+
 // Rating statistics model
 class RatingStats {
   final int totalReviews;
   final Map<String, int> counts;
   final Map<String, double> percentages;
-  final List<dynamic> getReviewDetails;
+  final List<ReviewDetail> getReviewDetails;
 
   RatingStats({
     required this.totalReviews,
@@ -30,11 +111,22 @@ class RatingStats {
       });
     }
 
+    // Parse review details
+    List<ReviewDetail> parseReviewDetails(List<dynamic>? reviewsList) {
+      if (reviewsList == null || reviewsList.isEmpty) return [];
+
+      return reviewsList
+          .map(
+            (review) => ReviewDetail.fromJson(review as Map<String, dynamic>),
+          )
+          .toList();
+    }
+
     return RatingStats(
       totalReviews: json['totalReviews'] ?? 0,
       counts: Map<String, int>.from(json['counts'] ?? {}),
       percentages: convertToDoubleMap(json['percentages']),
-      getReviewDetails: json['getReviewDetails'] ?? [],
+      getReviewDetails: parseReviewDetails(json['getReviewDetails']),
     );
   }
 
@@ -43,7 +135,9 @@ class RatingStats {
       'totalReviews': totalReviews,
       'counts': counts,
       'percentages': percentages,
-      'getReviewDetails': getReviewDetails,
+      'getReviewDetails': getReviewDetails
+          .map((review) => review.toJson())
+          .toList(),
     };
   }
 

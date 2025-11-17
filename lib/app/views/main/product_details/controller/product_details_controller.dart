@@ -5,6 +5,7 @@ import 'package:qr_code_inventory/app/core/services/product_service.dart';
 import 'package:qr_code_inventory/app/core/services/wishlist_service.dart';
 import 'package:qr_code_inventory/app/core/services/token_storage.dart';
 import 'package:qr_code_inventory/app/core/services/cart_service.dart';
+import 'package:qr_code_inventory/app/core/services/review_service.dart';
 import 'package:qr_code_inventory/app/views/main/cart/cart_view.dart';
 
 class ProductDetailsController extends GetxController {
@@ -13,6 +14,7 @@ class ProductDetailsController extends GetxController {
   final WishlistService _wishlistService = Get.find<WishlistService>();
   final TokenStorage _tokenStorage = Get.find<TokenStorage>();
   final CartService _cartService = Get.find<CartService>();
+  final ReviewService _reviewService = ReviewService();
 
   final isFavorite = false.obs;
   final quantity = 1.obs;
@@ -22,6 +24,7 @@ class ProductDetailsController extends GetxController {
   final errorMessage = ''.obs;
   final isWishlistLoading = false.obs;
   final isAddingToCart = false.obs;
+  final isSubmittingReview = false.obs;
 
   String? productId;
 
@@ -296,5 +299,82 @@ class ProductDetailsController extends GetxController {
   // Get cart items count for badge
   int get cartItemsCount {
     return _cartService.totalItems;
+  }
+
+  // Submit a review for the current product
+  Future<bool> submitReview({
+    required int rating,
+    required String reviewText,
+  }) async {
+    if (productId == null) {
+      Get.snackbar(
+        'Error',
+        'Product information not available',
+        backgroundColor: Colors.red.withOpacity(0.1),
+        colorText: Colors.red,
+      );
+      return false;
+    }
+
+    if (reviewText.trim().isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Please write a review',
+        backgroundColor: Colors.orange.withOpacity(0.1),
+        colorText: Colors.orange,
+      );
+      return false;
+    }
+
+    try {
+      isSubmittingReview.value = true;
+
+      final token = _tokenStorage.getAccessToken();
+      if (token == null) {
+        Get.snackbar(
+          'Error',
+          'Please login to submit a review',
+          backgroundColor: Colors.red.withOpacity(0.1),
+          colorText: Colors.red,
+        );
+        return false;
+      }
+
+      final response = await _reviewService.createReview(
+        rating: rating,
+        review: reviewText,
+        productId: productId!,
+        token: token,
+      );
+
+      if (response.success) {
+        Get.snackbar(
+          'Success',
+          'Your review has been submitted successfully',
+          backgroundColor: Colors.green.withOpacity(0.1),
+          colorText: Colors.green,
+          duration: const Duration(seconds: 2),
+        );
+
+        // Refresh product details to get updated ratings
+        await refreshProductDetails();
+
+        return true;
+      } else {
+        throw Exception(response.message);
+      }
+    } catch (e) {
+      debugPrint('Error submitting review: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to submit review: ${e.toString()}',
+        backgroundColor: Colors.red.withOpacity(0.1),
+        colorText: Colors.red,
+        duration: const Duration(seconds: 3),
+      );
+      return false;
+    } finally {
+      isSubmittingReview.value = false;
+    }
   }
 }
