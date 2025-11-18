@@ -1,6 +1,7 @@
 class ApiEndpoints {
   // Base URL - Replace with your actual API URL
   static const String baseUrl = 'http://10.10.12.25:5008/api/v1';
+  static const String imageUrl = 'http://10.10.12.25:5008';
 
   // Auth Endpoints
   static const String createUser = '$baseUrl/user/create-user';

@@ -1,128 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/core/models/product_model.dart';
-import 'package:qr_code_inventory/app/core/models/category_model.dart';
-import 'package:qr_code_inventory/app/core/utils/app_images.dart';
+import 'package:qr_code_inventory/app/core/services/product_service.dart';
+import 'package:qr_code_inventory/app/core/services/token_storage.dart';
 import 'package:qr_code_inventory/app/views/main/product_details/product_details_view.dart';
 
 class ProductSearchController extends GetxController {
+  // Services
+  late ProductService _productService;
+  late TokenStorage _tokenStorage;
+
+  // Controllers and observables
   final searchController = TextEditingController();
   final searchQuery = ''.obs;
   final searchResults = <Product>[].obs;
+  final isLoading = false.obs;
+  final hasError = false.obs;
+  final errorMessage = ''.obs;
 
-  // Using a list to handle multiple selections as per the UI
-  final selectedCategories = <String>[
-    'Mug',
-    'Beauty & Personal Care',
-    'Sports & Outdoor',
-  ].obs;
+  // Filter selections
+  final selectedCategories = <String>[].obs;
   final favoriteProducts = <String>[].obs;
 
-  // Sample data
-  final allProducts = <Product>[
-    Product(
-      id: '1',
-      name: 'UNIQLO AIRism Oversized T-Shirt – Unisex',
-      image: AppImages.bag,
-      price: '19.00',
-      size: 'Large',
-      status: 'active',
-      qrId: 'QR001',
-      category: Category(id: 'clothing', name: 'Clothing', image: ''),
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      rating: 4.8,
-      isFavorite: true,
-    ),
-    Product(
-      id: '2',
-      name: 'Levi\'s 511 Slim Fit Jeans – Dark Indigo',
-      image: AppImages.cats,
-      price: '69.00',
-      size: 'Medium',
-      status: 'active',
-      qrId: 'QR002',
-      category: Category(id: 'clothing', name: 'Clothing', image: ''),
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      rating: 4.7,
-    ),
-    Product(
-      id: '3',
-      name: 'H&M Ribbed Crop Top – Soft Beige',
-      image: AppImages.key,
-      price: '14.99',
-      size: 'Small',
-      status: 'active',
-      qrId: 'QR003',
-      category: Category(id: 'clothing', name: 'Clothing', image: ''),
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      rating: 4.6,
-    ),
-    Product(
-      id: '4',
-      name: 'ZARA Oversized Linen Blazer – Earth Tone',
-      image: AppImages.mug,
-      price: '89.00',
-      size: 'Large',
-      status: 'active',
-      qrId: 'QR004',
-      category: Category(id: 'clothing', name: 'Clothing', image: ''),
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      rating: 4.9,
-      isFavorite: true,
-    ),
-    Product(
-      id: '5',
-      name: 'Smart Keychains',
-      image: AppImages.sale,
-      price: '25.00',
-      size: 'Small',
-      status: 'active',
-      qrId: 'QR005',
-      category: Category(id: 'accessories', name: 'Accessories', image: ''),
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      rating: 4.5,
-    ),
-    Product(
-      id: '6',
-      name: 'Leather Keychains - Set of 3',
-      image: AppImages.salstrawe,
-      price: '120.00',
-      size: 'Small',
-      status: 'active',
-      qrId: 'QR006',
-      category: Category(id: 'accessories', name: 'Accessories', image: ''),
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      rating: 4.8,
-    ),
-  ].obs;
+  // All products data
+  final allProducts = <Product>[].obs;
 
   // Price range for filter
   final priceRangeStart = 0.0.obs;
   final priceRangeEnd = 2000.0.obs;
 
-  void setPriceRange(double start, double end) {
-    priceRangeStart.value = start;
-    priceRangeEnd.value = end;
-    update();
-  }
-
   // Rating for filter
   final selectedRating = '3.5+'.obs;
-  void setRating(String rating) {
-    selectedRating.value = rating;
-    update();
-  }
 
   @override
   void onInit() {
     super.onInit();
-    searchResults.assignAll(allProducts);
+    _productService = Get.find<ProductService>();
+    _tokenStorage = Get.find<TokenStorage>();
+
+    // Load products from API
+    _loadProductsFromAPI();
+
+    // Listen to search query changes
     searchController.addListener(() {
       searchQuery.value = searchController.text;
       _performSearch();
@@ -135,18 +54,99 @@ class ProductSearchController extends GetxController {
     super.onClose();
   }
 
-  void _performSearch() {
-    if (searchQuery.value.isEmpty) {
-      searchResults.assignAll(allProducts);
-    } else {
-      final query = searchQuery.value.toLowerCase();
-      final filtered = allProducts.where((product) {
-        return product.name.toLowerCase().contains(query);
-      }).toList();
-      searchResults.assignAll(filtered);
+  /// Load products from API
+  Future<void> _loadProductsFromAPI() async {
+    try {
+      isLoading.value = true;
+      hasError.value = false;
+      errorMessage.value = '';
+
+      final token = _tokenStorage.getAccessToken();
+      if (token == null) {
+        throw Exception('Please login to view products');
+      }
+
+      final response = await _productService.getAllProducts(token: token);
+
+      if (response.success) {
+        allProducts.assignAll(response.data.result);
+        searchResults.assignAll(allProducts);
+        debugPrint('✅ Loaded ${allProducts.length} products from API');
+      } else {
+        throw Exception(response.message);
+      }
+    } catch (e) {
+      debugPrint('❌ Error loading products: $e');
+      hasError.value = true;
+      errorMessage.value = e.toString();
+
+      // Show error snackbar
+      Get.snackbar(
+        'Error',
+        'Failed to load products: ${e.toString()}',
+        backgroundColor: Colors.red.withValues(alpha: 0.2),
+        colorText: Colors.red,
+        duration: const Duration(seconds: 3),
+      );
+    } finally {
+      isLoading.value = false;
     }
   }
 
+  /// Perform search based on query and applied filters
+  void _performSearch() {
+    List<Product> filtered = allProducts.toList();
+
+    // Filter by search query
+    if (searchQuery.value.isNotEmpty) {
+      final query = searchQuery.value.toLowerCase();
+      filtered = filtered.where((product) {
+        return product.name.toLowerCase().contains(query) ||
+            product.category.name.toLowerCase().contains(query);
+      }).toList();
+    }
+
+    // Filter by selected categories
+    if (selectedCategories.isNotEmpty) {
+      final categoryIds = selectedCategories
+          .map((name) => _getCategoryId(name))
+          .toList();
+      filtered = filtered.where((product) {
+        return categoryIds.contains(product.category.id.toLowerCase());
+      }).toList();
+    }
+
+    // Filter by price range
+    filtered = filtered.where((product) {
+      final price = double.tryParse(product.price) ?? 0.0;
+      return price >= priceRangeStart.value && price <= priceRangeEnd.value;
+    }).toList();
+
+    // Filter by rating
+    if (selectedRating.value.isNotEmpty &&
+        selectedRating.value != 'All Ratings') {
+      final ratingThreshold = _getRatingThreshold(selectedRating.value);
+      filtered = filtered.where((product) {
+        return product.effectiveRating >= ratingThreshold;
+      }).toList();
+    }
+
+    searchResults.assignAll(filtered);
+    debugPrint(
+      '🔍 Search results: ${searchResults.length} products (query: "${searchQuery.value}")',
+    );
+  }
+
+  /// Get rating threshold from rating string (e.g., "4.5+" -> 4.5)
+  double _getRatingThreshold(String rating) {
+    try {
+      return double.parse(rating.replaceAll('+', ''));
+    } catch (e) {
+      return 0.0;
+    }
+  }
+
+  /// Toggle favorite status for a product
   void toggleFavorite(String productId) {
     if (favoriteProducts.contains(productId)) {
       favoriteProducts.remove(productId);
@@ -156,16 +156,22 @@ class ProductSearchController extends GetxController {
     update();
   }
 
+  /// Check if a product is favorited
   bool isFavorite(String productId) => favoriteProducts.contains(productId);
 
+  /// Clear all filters and show all products
   void clearFilters() {
     searchController.clear();
     searchQuery.value = '';
     selectedCategories.clear();
-    searchResults.assignAll(allProducts);
+    priceRangeStart.value = 0.0;
+    priceRangeEnd.value = 2000.0;
+    selectedRating.value = '3.5+';
+    _performSearch();
     update();
   }
 
+  /// Handle product tap navigation
   void onProductTap(Product product) {
     Get.to(
       () => const ProductDetailsView(),
@@ -175,54 +181,60 @@ class ProductSearchController extends GetxController {
     );
   }
 
+  /// Toggle category selection
   void toggleCategorySelection(String category) {
     if (selectedCategories.contains(category)) {
       selectedCategories.remove(category);
     } else {
       selectedCategories.add(category);
     }
-    _filterByCategory();
+    _performSearch();
     update();
   }
 
-  void _filterByCategory() {
-    if (selectedCategories.isEmpty ||
-        selectedCategories.contains('All Categories')) {
-      searchResults.assignAll(allProducts);
-    } else {
-      final categoryIds = selectedCategories
-          .map((name) => _getCategoryId(name))
-          .toList();
-      searchResults.value = allProducts.where((product) {
-        return categoryIds.contains(product.category.id.toLowerCase());
-      }).toList();
-    }
+  /// Set price range for filtering
+  void setPriceRange(double start, double end) {
+    priceRangeStart.value = start;
+    priceRangeEnd.value = end;
+    _performSearch();
+    update();
   }
 
-  String _getCategoryId(String displayName) {
-    // This mapping logic can be improved based on your data model
-    switch (displayName) {
-      case 'Electronics':
-        return 'electronics';
-      case 'Hat':
-        return 'accessories';
-      case 'mart Keychains':
-        return 'accessories';
-      case 'Mug':
-        return 'accessories';
-      case 'Beauty & Personal Care':
-        return 'beauty';
-      case 'Sports & Outdoor':
-        return 'sports';
-      default:
-        return 'all';
-    }
+  /// Set rating filter
+  void setRating(String rating) {
+    selectedRating.value = rating;
+    _performSearch();
+    update();
   }
 
-  void onBackPressed() => Get.back();
-
+  /// Apply all filters
   void applyFilters() {
-    _filterByCategory();
+    _performSearch();
     Get.back(); // Close the drawer
   }
+
+  /// Get category ID from display name
+  String _getCategoryId(String displayName) {
+    final displayNameLower = displayName.toLowerCase();
+    // Try direct mapping first
+    switch (displayNameLower) {
+      case 'electronics':
+        return 'electronics';
+      case 'clothing':
+        return 'clothing';
+      case 'accessories':
+        return 'accessories';
+      case 'beauty':
+      case 'beauty & personal care':
+        return 'beauty';
+      case 'sports':
+      case 'sports & outdoor':
+        return 'sports';
+      default:
+        return displayNameLower;
+    }
+  }
+
+  /// Handle back button press
+  void onBackPressed() => Get.back();
 }

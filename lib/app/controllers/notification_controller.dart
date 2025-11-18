@@ -205,4 +205,23 @@ class NotificationController extends GetxController {
       return notificationDate == yesterday;
     }).toList();
   }
+
+  // Get earlier notifications (older than yesterday)
+  List<NotificationItem> get earlierNotifications {
+    final now = DateTime.now();
+    final yesterday = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(const Duration(days: 1));
+
+    return notifications.where((notification) {
+      final notificationDate = DateTime(
+        notification.createdAt.year,
+        notification.createdAt.month,
+        notification.createdAt.day,
+      );
+      return notificationDate.isBefore(yesterday);
+    }).toList();
+  }
 }

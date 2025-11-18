@@ -139,6 +139,18 @@ class NotificationsView extends StatelessWidget {
                 SizedBox(height: 16.h),
               ],
 
+              // Earlier Section
+              if (controller.earlierNotifications.isNotEmpty) ...[
+                const NotificationSectionHeader(title: 'Earlier'),
+                ...controller.earlierNotifications.map(
+                  (notification) => ApiNotificationItemWidget(
+                    notification: notification,
+                    onTap: () => controller.onNotificationTap(notification),
+                  ),
+                ),
+                SizedBox(height: 16.h),
+              ],
+
               // Bottom padding
               SizedBox(height: 80.h),
             ],

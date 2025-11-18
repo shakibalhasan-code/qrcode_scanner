@@ -1,3 +1,5 @@
+import '../api_endpoints.dart';
+
 class Category {
   final String id;
   final String name;
@@ -52,7 +54,7 @@ class Category {
     if (image.startsWith('http')) {
       return image;
     }
-    return 'http://10.10.12.25:5008$image';
+    return '${ApiEndpoints.imageUrl}$image';
   }
 
   // CopyWith method for creating modified copies

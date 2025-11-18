@@ -1,5 +1,6 @@
 // Import category model for nested category
 import 'category_model.dart';
+import '../api_endpoints.dart';
 
 // Review detail user model
 class ReviewUser {
@@ -235,7 +236,7 @@ class Product {
     if (image.startsWith('http')) {
       return image;
     }
-    return 'http://10.10.12.25:5008$image';
+    return '${ApiEndpoints.imageUrl}$image';
   }
 
   // Helper method to get formatted price
