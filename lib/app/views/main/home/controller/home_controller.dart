@@ -11,6 +11,7 @@ import 'package:qr_code_inventory/app/core/services/token_storage.dart';
 import 'package:qr_code_inventory/app/core/models/user_model.dart';
 import 'package:qr_code_inventory/app/views/main/home/sub_screen/special_product_screen.dart';
 import 'package:qr_code_inventory/app/views/main/product_details/product_details_view.dart';
+import 'package:qr_code_inventory/app/views/main/categories/category_products_view.dart';
 import 'package:qr_code_inventory/app/utils/routes/app_pages.dart';
 
 class HomeController extends GetxController {
@@ -152,8 +153,14 @@ class HomeController extends GetxController {
   }
 
   void onCategoryTap(Category category) {
-    // Handle category tap
-    Get.snackbar('Category', 'Tapped on ${category.name}');
+    debugPrint('🏷️ Category tapped: ${category.name} (ID: ${category.id})');
+
+    // Navigate to CategoryProductsView to show products by category
+    Get.to(
+      () => CategoryProductsView(category: category),
+      transition: Transition.rightToLeft,
+      duration: const Duration(milliseconds: 300),
+    );
   }
 
   void onProductTap(Product product) {

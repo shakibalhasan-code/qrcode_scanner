@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/core/models/category_model.dart';
 import 'package:qr_code_inventory/app/core/services/category_service.dart';
 import 'package:qr_code_inventory/app/core/services/token_storage.dart';
+import 'package:qr_code_inventory/app/views/main/categories/category_products_view.dart';
 
 class CategoryController extends GetxController {
   // Services
@@ -115,14 +116,8 @@ class CategoryController extends GetxController {
     selectedCategory.value = category;
     debugPrint('🏷️ Selected category: ${category.name}');
 
-    // You can navigate to category details or products here
-    // For now, just show a snackbar
-    Get.snackbar(
-      'Category Selected',
-      'You selected: ${category.name}',
-      backgroundColor: Colors.blue,
-      colorText: Colors.white,
-    );
+    // Navigate to category products view
+    Get.to(() => CategoryProductsView(category: category));
   }
 
   // Refresh categories

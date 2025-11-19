@@ -40,6 +40,10 @@ class ApiEndpoints {
   // Review Endpoints
   static const String createReview = '$baseUrl/review/create-review';
 
+  // Assign Product Endpoints
+  static const String getAssignProductsByCategory =
+      '$baseUrl/assign-product/get-all-assign-product-by-category';
+
   // Image Base URL
   static const String imageBaseUrl = 'http://10.10.12.25:5008';
 

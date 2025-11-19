@@ -5,6 +5,7 @@ import 'package:qr_code_inventory/app/utils/app_colors.dart';
 import 'package:qr_code_inventory/app/views/main/cart/cart_view.dart';
 import 'package:qr_code_inventory/app/core/models/user_model.dart';
 import 'package:qr_code_inventory/app/core/services/cart_service.dart';
+import 'package:qr_code_inventory/app/views/main/qr_scanner/qr_scanner_screen.dart';
 
 class HomeHeaderWidget extends StatelessWidget {
   final String greeting;
@@ -76,7 +77,10 @@ class HomeHeaderWidget extends StatelessWidget {
           // Shopping Cart Icon with Badge
           _buildCartIcon(),
           SizedBox(width: 10.w),
-          IconButton(onPressed: () {}, icon: Icon(Icons.qr_code_scanner)),
+          IconButton(
+            onPressed: () => Get.to(() => QrScannerScreen()),
+            icon: Icon(Icons.qr_code_scanner),
+          ),
         ],
       ),
     );
