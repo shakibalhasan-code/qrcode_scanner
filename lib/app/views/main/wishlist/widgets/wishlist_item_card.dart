@@ -58,6 +58,10 @@ class WishlistItemCard extends StatelessWidget {
                               item.product.getFullImageUrl(),
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
+                                debugPrint(
+                                  '🖼️ Failed to load wishlist image: ${item.product.getFullImageUrl()}',
+                                );
+                                debugPrint('🖼️ Error: $error');
                                 return Container(
                                   color: Colors.grey[200],
                                   child: Center(
@@ -83,28 +87,31 @@ class WishlistItemCard extends StatelessWidget {
                                   ),
                                 );
                               },
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return Container(
-                                      color: Colors.grey[200],
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          value:
-                                              loadingProgress
-                                                      .expectedTotalBytes !=
-                                                  null
-                                              ? loadingProgress
-                                                        .cumulativeBytesLoaded /
-                                                    loadingProgress
-                                                        .expectedTotalBytes!
-                                              : null,
-                                          strokeWidth: 2,
-                                          color: const Color(0xFFFFD54F),
-                                        ),
-                                      ),
-                                    );
-                                  },
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) {
+                                  debugPrint(
+                                    '✅ Successfully loaded wishlist image: ${item.product.getFullImageUrl()}',
+                                  );
+                                  return child;
+                                }
+                                return Container(
+                                  color: Colors.grey[200],
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      value:
+                                          loadingProgress.expectedTotalBytes !=
+                                              null
+                                          ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                loadingProgress
+                                                    .expectedTotalBytes!
+                                          : null,
+                                      strokeWidth: 2,
+                                      color: const Color(0xFFFFD54F),
+                                    ),
+                                  ),
+                                );
+                              },
                             )
                           : Container(
                               color: Colors.grey[200],

@@ -185,7 +185,19 @@ class _WriteReviewBottomSheetState extends State<WriteReviewBottomSheet> {
                           );
 
                           if (success) {
-                            Get.back(); // Close bottom sheet
+                            Get.snackbar(
+                              'Thank You',
+                              'Your review has been submitted',
+                              backgroundColor: Colors.green.withOpacity(0.1),
+                              colorText: Colors.green,
+                            );
+                          } else {
+                            Get.snackbar(
+                              'Error',
+                              'Failed to submit your review. Please try again later.',
+                              backgroundColor: Colors.red.withOpacity(0.1),
+                              colorText: Colors.red,
+                            );
                           }
                         },
                   style: ElevatedButton.styleFrom(

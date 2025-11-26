@@ -5,11 +5,13 @@ class AssignProductUser {
   final String id;
   final String name;
   final String email;
+  final String? image;
 
   AssignProductUser({
     required this.id,
     required this.name,
     required this.email,
+    this.image,
   });
 
   factory AssignProductUser.fromJson(Map<String, dynamic> json) {
@@ -17,11 +19,28 @@ class AssignProductUser {
       id: json['_id'] ?? '',
       name: json['name'] ?? '',
       email: json['email'] ?? '',
+      image: json['image'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'_id': id, 'name': name, 'email': email};
+    return {
+      '_id': id,
+      'name': name,
+      'email': email,
+      if (image != null) 'image': image,
+    };
+  }
+
+  // Helper method to get complete image URL
+  String getFullImageUrl() {
+    if (image == null || image!.isEmpty) return '';
+    if (image!.startsWith('http')) {
+      return image!;
+    }
+    final baseUrl = ApiEndpoints.imageBaseUrl;
+    final imagePath = image!.startsWith('/') ? image! : '/$image';
+    return '$baseUrl$imagePath';
   }
 }
 
@@ -33,6 +52,10 @@ class AssignedProductDetails {
   final String image;
   final String price;
   final String size;
+  final String? status;
+  final String? qrId;
+  final int? count;
+  final double? rating;
 
   AssignedProductDetails({
     required this.id,
@@ -41,6 +64,10 @@ class AssignedProductDetails {
     required this.image,
     required this.price,
     required this.size,
+    this.status,
+    this.qrId,
+    this.count,
+    this.rating,
   });
 
   factory AssignedProductDetails.fromJson(Map<String, dynamic> json) {
@@ -51,6 +78,12 @@ class AssignedProductDetails {
       image: json['image'] ?? '',
       price: json['price'] ?? '0',
       size: json['size'] ?? '',
+      status: json['status'],
+      qrId: json['qrId'],
+      count: json['count'] is int
+          ? json['count']
+          : (json['count'] is String ? int.tryParse(json['count']) : null),
+      rating: json['rating'] is num ? (json['rating'] as num).toDouble() : null,
     );
   }
 
@@ -62,15 +95,23 @@ class AssignedProductDetails {
       'image': image,
       'price': price,
       'size': size,
+      if (status != null) 'status': status,
+      if (qrId != null) 'qrId': qrId,
+      if (count != null) 'count': count,
+      if (rating != null) 'rating': rating,
     };
   }
 
   // Helper method to get complete image URL
   String getFullImageUrl() {
+    if (image.isEmpty) return '';
     if (image.startsWith('http')) {
       return image;
     }
-    return '${ApiEndpoints.imageUrl}$image';
+    // Ensure we don't double up slashes
+    final baseUrl = ApiEndpoints.imageBaseUrl;
+    final imagePath = image.startsWith('/') ? image : '/$image';
+    return '$baseUrl$imagePath';
   }
 
   // Helper method to get formatted price
@@ -134,10 +175,21 @@ class AssignProductMeta {
 
   factory AssignProductMeta.fromJson(Map<String, dynamic> json) {
     return AssignProductMeta(
-      page: json['page'] ?? 1,
-      limit: json['limit'] ?? 10,
-      total: json['total'] ?? 0,
+      page: _parseToInt(json['page'], defaultValue: 1),
+      limit: _parseToInt(json['limit'], defaultValue: 10),
+      total: _parseToInt(json['total'], defaultValue: 0),
     );
+  }
+
+  // Helper method to safely parse dynamic value to int
+  static int _parseToInt(dynamic value, {required int defaultValue}) {
+    if (value == null) return defaultValue;
+    if (value is int) return value;
+    if (value is String) {
+      return int.tryParse(value) ?? defaultValue;
+    }
+    if (value is double) return value.round();
+    return defaultValue;
   }
 
   Map<String, dynamic> toJson() {

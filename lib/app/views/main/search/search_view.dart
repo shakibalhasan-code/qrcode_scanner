@@ -10,7 +10,7 @@ class SearchView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProductSearchController());
+    final controller = Get.put(ProductSearchController(), permanent: false);
     // A key to control the Scaffold (e.g., to open the drawer)
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 

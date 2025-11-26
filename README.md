@@ -38,6 +38,7 @@ lib/
 ## 📱 Screenshots
 
 The app features a modern design with:
+
 - **Dark Blue** (#1E3A8A) as primary color
 - **Bright Yellow** (#F59E0B) as secondary color
 - **Clean white** backgrounds with subtle shadows
@@ -47,6 +48,7 @@ The app features a modern design with:
 ## 🛠️ Setup Instructions
 
 ### Prerequisites
+
 - Flutter SDK (^3.8.1)
 - Dart SDK
 - Android Studio / VS Code
@@ -55,17 +57,20 @@ The app features a modern design with:
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd qr_code_inventory
    ```
 
 2. **Install dependencies**
+
    ```bash
    flutter pub get
    ```
 
 3. **Run the app**
+
    ```bash
    flutter run
    ```
@@ -73,24 +78,28 @@ The app features a modern design with:
 ## 📦 Dependencies
 
 ### Core Dependencies
+
 - **get**: ^4.6.6 - State management and routing
 - **http**: ^1.1.0 - HTTP client for API calls
 - **shared_preferences**: ^2.2.2 - Local data storage
 - **flutter_secure_storage**: ^9.0.0 - Secure data storage
 
 ### QR Code & Camera
+
 - **qr_code_scanner**: ^1.0.1 - QR code scanning
 - **qr_flutter**: ^4.1.0 - QR code generation
 - **image_picker**: ^1.0.4 - Image selection
 - **permission_handler**: ^11.0.1 - Camera permissions
 
 ### UI & UX
+
 - **fluttertoast**: ^8.2.4 - Toast notifications
 - **loading_animation_widget**: ^1.2.0+4 - Loading animations
 
 ## 🔧 Configuration
 
 ### API Configuration
+
 Update the API endpoints in `lib/app/global/constants.dart`:
 
 ```dart
@@ -98,6 +107,7 @@ static const String baseUrl = 'https://your-api-url.com';
 ```
 
 ### Theme Customization
+
 Modify colors and styles in `lib/app/theme/app_theme.dart`:
 
 ```dart
@@ -108,24 +118,28 @@ static const Color secondaryColor = Color(0xFFF59E0B);
 ## 📱 Module Structure
 
 ### Authentication Module (`/auth`)
+
 - User registration with validation
 - Login functionality
 - Password requirements checking
 - Terms & conditions acceptance
 
 ### Home Module (`/home`)
+
 - Dashboard with quick actions
 - Recent activity feed
 - Navigation to other modules
 - User profile information
 
 ### QR Scanner Module (`/qr_scanner`)
+
 - Camera permission handling
 - QR code scanning interface
 - Real-time QR code detection
 - Scan result processing
 
 ### Inventory Module (`/inventory`)
+
 - Item listing with search
 - Category and location filtering
 - Add/edit/delete operations
@@ -141,12 +155,14 @@ static const Color secondaryColor = Color(0xFFF59E0B);
 ## 🎨 UI Components
 
 ### Custom Widgets
+
 - **CustomAppBar**: Consistent app bar across modules
 - **Input Fields**: Styled text inputs with validation
 - **Action Cards**: Interactive cards for quick actions
 - **Info Chips**: Compact information display
 
 ### Theme System
+
 - **Color Palette**: Consistent color scheme throughout the app
 - **Typography**: Poppins font family with defined text styles
 - **Spacing**: Standardized spacing and padding values
@@ -172,6 +188,7 @@ The app uses **GetX** for state management with:
 ## 🔍 Testing
 
 Run tests using:
+
 ```bash
 flutter test
 ```
@@ -191,6 +208,7 @@ This project is licensed under the MIT License.
 ## 🤝 Support
 
 For support and questions:
+
 - Create an issue in the repository
 - Contact the development team
 - Check the documentation
@@ -198,6 +216,7 @@ For support and questions:
 ## 🔄 Updates
 
 Stay updated with the latest features and improvements by:
+
 - Following the repository
 - Checking release notes
 - Reading the changelog

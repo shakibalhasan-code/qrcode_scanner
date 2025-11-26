@@ -7,19 +7,31 @@ class ReviewUser {
   final String id;
   final String name;
   final String email;
+  final String? image;
 
-  ReviewUser({required this.id, required this.name, required this.email});
+  ReviewUser({
+    required this.id,
+    required this.name,
+    required this.email,
+    this.image,
+  });
 
   factory ReviewUser.fromJson(Map<String, dynamic> json) {
     return ReviewUser(
       id: json['_id'] ?? '',
       name: json['name'] ?? 'Anonymous',
       email: json['email'] ?? '',
+      image: json['image'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'_id': id, 'name': name, 'email': email};
+    return {
+      '_id': id,
+      'name': name,
+      'email': email,
+      if (image != null) 'image': image,
+    };
   }
 }
 
@@ -28,14 +40,14 @@ class ReviewDetail {
   final String id;
   final int rating;
   final String review;
-  final ReviewUser user;
+  final ReviewUser? user; // Make nullable to handle null users from API
   final DateTime createdAt;
 
   ReviewDetail({
     required this.id,
     required this.rating,
     required this.review,
-    required this.user,
+    this.user, // Optional
     required this.createdAt,
   });
 
@@ -44,7 +56,7 @@ class ReviewDetail {
       id: json['_id'] ?? '',
       rating: json['rating'] ?? 0,
       review: json['review'] ?? '',
-      user: ReviewUser.fromJson(json['user'] ?? {}),
+      user: json['user'] != null ? ReviewUser.fromJson(json['user']) : null,
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'])
           : DateTime.now(),
@@ -56,7 +68,7 @@ class ReviewDetail {
       '_id': id,
       'rating': rating,
       'review': review,
-      'user': user.toJson(),
+      if (user != null) 'user': user!.toJson(),
       'createdAt': createdAt.toIso8601String(),
     };
   }
@@ -169,6 +181,7 @@ class Product {
 
   // -- Fields added for UI --
   final double rating;
+  final int count; // Total review/item count
   bool isFavorite;
 
   Product({
@@ -184,6 +197,7 @@ class Product {
     required this.updatedAt,
     this.ratingStats,
     this.rating = 0.0,
+    this.count = 0,
     this.isFavorite = false,
   });
 
@@ -208,6 +222,9 @@ class Product {
           ? RatingStats.fromJson(json['ratingStats'])
           : null,
       rating: json['rating']?.toDouble() ?? 0.0,
+      count: json['count'] is int
+          ? json['count']
+          : (json['count'] is String ? int.tryParse(json['count']) ?? 0 : 0),
       isFavorite: json['isFavorite'] ?? false,
     );
   }
@@ -227,16 +244,21 @@ class Product {
       'updatedAt': updatedAt.toIso8601String(),
       'ratingStats': ratingStats?.toJson(),
       'rating': rating,
+      'count': count,
       'isFavorite': isFavorite,
     };
   }
 
   // Helper method to get complete image URL
   String getFullImageUrl() {
+    if (image.isEmpty) return '';
     if (image.startsWith('http')) {
       return image;
     }
-    return '${ApiEndpoints.imageUrl}$image';
+    // Ensure we don't double up slashes
+    final baseUrl = ApiEndpoints.imageBaseUrl;
+    final imagePath = image.startsWith('/') ? image : '/$image';
+    return '$baseUrl$imagePath';
   }
 
   // Helper method to get formatted price
@@ -251,7 +273,12 @@ class Product {
 
   // Helper method to get total reviews count
   int get totalReviews {
-    return ratingStats?.totalReviews ?? 0;
+    // First priority: ratingStats (from product details API)
+    if (ratingStats != null) {
+      return ratingStats!.totalReviews;
+    }
+    // Second priority: count field (from assigned products API)
+    return count;
   }
 
   // CopyWith method for creating modified copies
@@ -268,6 +295,7 @@ class Product {
     DateTime? updatedAt,
     RatingStats? ratingStats,
     double? rating,
+    int? count,
     bool? isFavorite,
   }) {
     return Product(
@@ -283,6 +311,7 @@ class Product {
       updatedAt: updatedAt ?? this.updatedAt,
       ratingStats: ratingStats ?? this.ratingStats,
       rating: rating ?? this.rating,
+      count: count ?? this.count,
       isFavorite: isFavorite ?? this.isFavorite,
     );
   }

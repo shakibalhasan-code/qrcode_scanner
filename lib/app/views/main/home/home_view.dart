@@ -12,7 +12,7 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(HomeController());
+    Get.put(HomeController(), permanent: false);
 
     return Scaffold(
       backgroundColor: Colors.white,

@@ -6,8 +6,8 @@ import 'package:qr_code_inventory/app/core/services/token_storage.dart';
 import 'package:qr_code_inventory/app/views/main/product_details/product_details_view.dart';
 
 class WishlistController extends GetxController {
-  final WishlistService _wishlistService = Get.find<WishlistService>();
-  final TokenStorage _tokenStorage = Get.find<TokenStorage>();
+  late final WishlistService _wishlistService;
+  late final TokenStorage _tokenStorage;
 
   final isLoading = false.obs;
   final hasError = false.obs;
@@ -17,7 +17,23 @@ class WishlistController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchWishlist();
+
+    // Initialize services safely
+    try {
+      _wishlistService = Get.find<WishlistService>();
+      _tokenStorage = Get.find<TokenStorage>();
+      fetchWishlist();
+    } catch (e) {
+      debugPrint('⚠️ Error initializing WishlistController: $e');
+      hasError.value = true;
+      errorMessage.value = 'Failed to initialize services';
+    }
+  }
+
+  @override
+  void onClose() {
+    debugPrint('🧹 Disposing WishlistController');
+    super.onClose();
   }
 
   Future<void> fetchWishlist() async {

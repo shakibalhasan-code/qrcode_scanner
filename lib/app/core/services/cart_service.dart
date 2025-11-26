@@ -96,33 +96,16 @@ class CartService extends GetxService {
 
       _saveCartToStorage();
 
-      Get.snackbar(
-        'Added to Cart',
-        '${product.name} has been added to your cart',
-        backgroundColor: Colors.green.withOpacity(0.1),
-        colorText: Colors.green,
-        duration: const Duration(seconds: 2),
-        icon: const Icon(Icons.shopping_cart, color: Colors.green),
-      );
-
+      // Don't show snackbar from service - let the calling controller handle UI feedback
       return true;
     } catch (e) {
       debugPrint('💥 Error adding product to cart: $e');
-
-      Get.snackbar(
-        'Error',
-        'Failed to add product to cart: ${e.toString()}',
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-        duration: const Duration(seconds: 3),
-      );
-
       return false;
     }
   }
 
   // Remove item from cart
-  bool removeFromCart(String cartItemId) {
+  CartItem? removeFromCart(String cartItemId) {
     debugPrint('🗑️ Removing item from cart: $cartItemId');
 
     try {
@@ -133,23 +116,15 @@ class CartService extends GetxService {
         cartItems.removeAt(itemIndex);
         _saveCartToStorage();
 
-        Get.snackbar(
-          'Removed',
-          '${removedItem.name} has been removed from your cart',
-          backgroundColor: Colors.orange.withOpacity(0.1),
-          colorText: Colors.orange,
-          duration: const Duration(seconds: 2),
-        );
-
         debugPrint('✅ Item removed from cart successfully');
-        return true;
+        return removedItem; // Return the removed item for UI feedback
       } else {
         debugPrint('⚠️ Item not found in cart');
-        return false;
+        return null;
       }
     } catch (e) {
       debugPrint('💥 Error removing item from cart: $e');
-      return false;
+      return null;
     }
   }
 
@@ -161,7 +136,8 @@ class CartService extends GetxService {
 
     try {
       if (newQuantity <= 0) {
-        return removeFromCart(cartItemId);
+        final removedItem = removeFromCart(cartItemId);
+        return removedItem != null;
       }
 
       final itemIndex = cartItems.indexWhere((item) => item.id == cartItemId);
@@ -238,14 +214,6 @@ class CartService extends GetxService {
     try {
       cartItems.clear();
       _saveCartToStorage();
-
-      Get.snackbar(
-        'Cart Cleared',
-        'All items have been removed from your cart',
-        backgroundColor: Colors.orange.withOpacity(0.1),
-        colorText: Colors.orange,
-        duration: const Duration(seconds: 2),
-      );
     } catch (e) {
       debugPrint('💥 Error clearing cart: $e');
     }

@@ -159,6 +159,15 @@ class SpecialProductScreen extends StatelessWidget {
                                             color: Colors.grey[600],
                                           ),
                                         ),
+                                        SizedBox(width: 2.w),
+                                        Text(
+                                          '(${product.totalReviews})',
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.grey[500],
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ],

@@ -7,7 +7,7 @@ import 'package:qr_code_inventory/app/views/main/product_details/product_details
 import 'package:qr_code_inventory/app/core/models/product_model.dart';
 import 'package:qr_code_inventory/app/core/models/category_model.dart';
 
-class CategoryProductsController extends GetxController {
+class AllAssignedProductsController extends GetxController {
   // Services
   late AssignProductService _assignProductService;
   late TokenStorage _tokenStorage;
@@ -17,18 +17,32 @@ class CategoryProductsController extends GetxController {
   final hasError = false.obs;
   final errorMessage = ''.obs;
   final assignedProducts = <AssignProduct>[].obs;
+  final filteredProducts = <AssignProduct>[].obs;
   final totalProducts = 0.obs;
+  final searchQuery = ''.obs;
+
+  // Controllers
+  final TextEditingController searchController = TextEditingController();
 
   @override
   void onInit() {
     super.onInit();
-    debugPrint('🚀 CategoryProductsController.onInit() started');
+    debugPrint('🚀 AllAssignedProductsController.onInit() started');
 
     try {
       _assignProductService = Get.find<AssignProductService>();
       _tokenStorage = Get.find<TokenStorage>();
+
+      // Load all assigned products
+      loadAllAssignedProducts();
+
+      // Listen to search changes
+      searchController.addListener(() {
+        searchQuery.value = searchController.text;
+        _filterProducts();
+      });
     } catch (e) {
-      debugPrint('⚠️ Error initializing CategoryProductsController: $e');
+      debugPrint('⚠️ Error initializing AllAssignedProductsController: $e');
       hasError.value = true;
       errorMessage.value = 'Failed to initialize services';
     }
@@ -36,13 +50,14 @@ class CategoryProductsController extends GetxController {
 
   @override
   void onClose() {
-    debugPrint('🧹 Disposing CategoryProductsController');
+    searchController.dispose();
+    debugPrint('🧹 Disposing AllAssignedProductsController');
     super.onClose();
   }
 
-  /// Load products by category ID
-  Future<void> loadProductsByCategory(String categoryId) async {
-    debugPrint('🔄 Loading products for category: $categoryId');
+  /// Load all assigned products
+  Future<void> loadAllAssignedProducts() async {
+    debugPrint('🔄 Loading all assigned products');
 
     try {
       isLoading.value = true;
@@ -54,36 +69,53 @@ class CategoryProductsController extends GetxController {
         throw Exception('Please login to view products');
       }
 
-      final response = await _assignProductService.getAssignProductsByCategory(
-        categoryId: categoryId,
+      final response = await _assignProductService.getAllAssignProducts(
         token: token,
       );
 
       if (response.success) {
         assignedProducts.assignAll(response.data.assignProduct);
+        filteredProducts.assignAll(response.data.assignProduct);
         totalProducts.value = response.data.meta.total;
-        debugPrint(
-          '✅ Loaded ${assignedProducts.length} assigned products for category',
-        );
+        debugPrint('✅ Loaded ${assignedProducts.length} assigned products');
       } else {
         throw Exception(response.message);
       }
     } catch (e) {
-      debugPrint('❌ Error loading products for category: $e');
+      debugPrint('❌ Error loading all assigned products: $e');
       hasError.value = true;
       errorMessage.value = e.toString();
-
-      // Show error snackbar
-      // Get.snackbar(
-      //   'Error',
-      //   'Failed to load products: ${e.toString()}',
-      //   backgroundColor: Colors.red.withValues(alpha: 0.2),
-      //   colorText: Colors.red,
-      //   duration: const Duration(seconds: 3),
-      // );
     } finally {
       isLoading.value = false;
     }
+  }
+
+  /// Filter products based on search query
+  void _filterProducts() {
+    final query = searchQuery.value.toLowerCase();
+
+    if (query.isEmpty) {
+      filteredProducts.assignAll(assignedProducts);
+    } else {
+      filteredProducts.assignAll(
+        assignedProducts.where((product) {
+          final productName = product.productId.name.toLowerCase();
+          final userName = product.userId.name.toLowerCase();
+          final userEmail = product.userId.email.toLowerCase();
+
+          return productName.contains(query) ||
+              userName.contains(query) ||
+              userEmail.contains(query);
+        }).toList(),
+      );
+    }
+  }
+
+  /// Clear search
+  void clearSearch() {
+    searchController.clear();
+    searchQuery.value = '';
+    filteredProducts.assignAll(assignedProducts);
   }
 
   /// Handle product tap navigation
@@ -106,7 +138,7 @@ class CategoryProductsController extends GetxController {
     // Create a basic Category object
     final category = Category(
       id: assignedProduct.category,
-      name: 'Category', // You might want to fetch category name separately
+      name: 'Category',
       image: '',
     );
 
@@ -116,20 +148,20 @@ class CategoryProductsController extends GetxController {
       image: assignedProduct.image,
       price: assignedProduct.price,
       size: assignedProduct.size,
-      status: 'active',
-      qrId: '',
+      status: assignedProduct.status ?? 'active',
+      qrId: assignedProduct.qrId ?? '',
       category: category,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       ratingStats: null,
-      rating: 0.0,
+      rating: assignedProduct.rating ?? 0.0,
       isFavorite: false,
     );
   }
 
   /// Check if there are any products
-  bool get hasProducts => assignedProducts.isNotEmpty;
+  bool get hasProducts => filteredProducts.isNotEmpty;
 
   /// Get products count
-  int get productsCount => assignedProducts.length;
+  int get productsCount => filteredProducts.length;
 }

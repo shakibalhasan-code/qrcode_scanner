@@ -12,7 +12,7 @@ class CategoryProductsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(CategoryProductsController());
+    final controller = Get.put(CategoryProductsController(), permanent: false);
 
     // Initialize with category
     WidgetsBinding.instance.addPostFrameCallback((_) {

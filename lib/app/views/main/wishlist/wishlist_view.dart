@@ -9,7 +9,7 @@ class WishlistView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(WishlistController());
+    final controller = Get.put(WishlistController(), permanent: false);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -144,27 +144,27 @@ class WishlistView extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 32.h),
-                  ElevatedButton(
-                    onPressed: () => Get.back(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFFD54F),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 32.w,
-                        vertical: 16.h,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.r),
-                      ),
-                    ),
-                    child: Text(
-                      'Start Shopping',
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
+                  // ElevatedButton(
+                  //   onPressed: () => Get.back(),
+                  //   style: ElevatedButton.styleFrom(
+                  //     backgroundColor: const Color(0xFFFFD54F),
+                  //     padding: EdgeInsets.symmetric(
+                  //       horizontal: 32.w,
+                  //       vertical: 16.h,
+                  //     ),
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(25.r),
+                  //     ),
+                  //   ),
+                  //   child: Text(
+                  //     'Start Shopping',
+                  //     style: TextStyle(
+                  //       fontSize: 16.sp,
+                  //       color: Colors.black,
+                  //       fontWeight: FontWeight.w600,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

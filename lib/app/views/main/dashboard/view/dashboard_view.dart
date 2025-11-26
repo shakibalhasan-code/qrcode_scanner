@@ -8,7 +8,7 @@ import 'package:qr_code_inventory/app/views/main/dashboard/controller/dashboard_
 class DashboardView extends StatelessWidget {
   DashboardView({super.key});
 
-  final controller = Get.put(DashboardController());
+  final controller = Get.put(DashboardController(), permanent: false);
 
   // Method to create bottom navigation bar item with HugeIcons
   BottomNavigationBarItem _buildNavItem({
@@ -57,7 +57,8 @@ class DashboardView extends StatelessWidget {
           items: [
             _buildNavItem(
               strokeIcon: HugeIcons.strokeRoundedHome01,
-              filledIcon: HugeIcons.strokeRoundedHome01, // Use same icon with fill property
+              filledIcon: HugeIcons
+                  .strokeRoundedHome01, // Use same icon with fill property
               isSelected: currentIndex == 0,
             ),
             _buildNavItem(

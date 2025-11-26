@@ -11,7 +11,7 @@ class ProductSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get the PersonalizationController
-    final controller = Get.put(PersonalizationController());
+    final controller = Get.put(PersonalizationController(), permanent: false);
     ScreenUtil.init(context, designSize: const Size(375, 812));
 
     return Scaffold(

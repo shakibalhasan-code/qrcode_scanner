@@ -16,7 +16,7 @@ class ProductDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProductDetailsController());
+    final controller = Get.put(ProductDetailsController(), permanent: false);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -131,7 +131,9 @@ class ProductDetailsView extends StatelessWidget {
                       SizedBox(height: 24.h),
 
                       // Product Info (name, rating, price)
-                      ProductDetailsInfo(product: controller.product!),
+                      Obx(
+                        () => ProductDetailsInfo(product: controller.product!),
+                      ),
 
                       // SizedBox(height: 10.h),
 
@@ -145,7 +147,10 @@ class ProductDetailsView extends StatelessWidget {
                       SizedBox(height: 24.h),
 
                       // Reviews Section
-                      ProductDetailsReviews(product: controller.product),
+                      Obx(
+                        () =>
+                            ProductDetailsReviews(product: controller.product),
+                      ),
 
                       SizedBox(height: 100.h), // Space for bottom button
                     ],
@@ -180,6 +185,8 @@ class ProductDetailsView extends StatelessWidget {
             () => ElevatedButton(
               onPressed: controller.isAddingToCart.value
                   ? null
+                  : controller.isProductInCart
+                  ? controller.navigateToCart
                   : controller.addToCart,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFFD54F),
@@ -199,7 +206,7 @@ class ProductDetailsView extends StatelessWidget {
                       ),
                     )
                   : Text(
-                      'Add to Cart',
+                      controller.isProductInCart ? 'View Cart' : 'Add to Cart',
                       style: TextStyle(
                         fontSize: 16.sp,
                         color: Colors.black,

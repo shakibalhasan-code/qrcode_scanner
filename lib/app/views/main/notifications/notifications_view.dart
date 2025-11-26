@@ -10,7 +10,7 @@ class NotificationsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(NotificationController());
+    final controller = Get.put(NotificationController(), permanent: false);
 
     return Scaffold(
       backgroundColor: Colors.white,

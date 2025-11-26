@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/core/models/product_model.dart';
 import 'package:qr_code_inventory/app/core/models/category_model.dart';
 import 'package:qr_code_inventory/app/views/main/product_details/product_details_view.dart';
+import 'package:qr_code_inventory/app/utils/navigation_utils.dart';
 
 class CategoriesController extends GetxController {
   final allProducts = <Product>[
@@ -115,6 +116,6 @@ class CategoriesController extends GetxController {
   }
 
   void onBackPressed() {
-    Get.back();
+    NavigationUtils.safeBack();
   }
 }

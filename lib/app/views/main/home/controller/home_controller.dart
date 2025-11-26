@@ -5,6 +5,7 @@ import 'package:qr_code_inventory/app/core/models/category_model.dart';
 import 'package:qr_code_inventory/app/core/models/product_model.dart';
 import 'package:qr_code_inventory/app/core/services/category_service.dart';
 import 'package:qr_code_inventory/app/core/services/product_service.dart';
+import 'package:qr_code_inventory/app/core/services/assign_product_service.dart';
 import 'package:qr_code_inventory/app/core/services/wishlist_service.dart';
 import 'package:qr_code_inventory/app/core/services/user_service.dart';
 import 'package:qr_code_inventory/app/core/services/token_storage.dart';
@@ -18,6 +19,7 @@ class HomeController extends GetxController {
   // Services
   late CategoryService categoryService;
   late ProductService productService;
+  late AssignProductService assignProductService;
   late WishlistService wishlistService;
   late UserService userService;
   late TokenStorage tokenStorage;
@@ -49,6 +51,7 @@ class HomeController extends GetxController {
     super.onInit();
     categoryService = Get.find<CategoryService>();
     productService = Get.find<ProductService>();
+    assignProductService = Get.find<AssignProductService>();
     wishlistService = Get.find<WishlistService>();
     userService = Get.find<UserService>();
     tokenStorage = Get.find<TokenStorage>();
@@ -229,7 +232,7 @@ class HomeController extends GetxController {
     update();
   }
 
-  // Load products from API
+  // Load products from API - using assigned products endpoint
   Future<void> loadProducts() async {
     debugPrint('🚀 HomeController.loadProducts() called');
 
@@ -242,11 +245,40 @@ class HomeController extends GetxController {
         return;
       }
 
-      final response = await productService.getAllProducts(token: token);
+      // Use getAllAssignProducts endpoint instead
+      final response = await assignProductService.getAllAssignProducts(
+        token: token,
+      );
 
       if (response.success) {
-        products.value = response.data.result;
-        debugPrint('✅ Loaded ${products.length} products from API');
+        // Convert AssignProduct to Product model
+        products.value = response.data.assignProduct.map((assignProduct) {
+          final productDetails = assignProduct.productId;
+
+          // Create a basic Category object from the category string
+          final category = Category(
+            id: productDetails.category,
+            name: productDetails.category,
+            image: '',
+          );
+
+          return Product(
+            id: productDetails.id,
+            name: productDetails.name,
+            image: productDetails.image,
+            price: productDetails.price,
+            size: productDetails.size,
+            status: productDetails.status ?? 'active',
+            qrId: productDetails.qrId ?? '',
+            category: category,
+            createdAt: assignProduct.createdAt,
+            updatedAt: assignProduct.updatedAt,
+            rating: productDetails.rating ?? 0.0,
+            count: productDetails.count ?? 0, // Store review count
+          );
+        }).toList();
+
+        debugPrint('✅ Loaded ${products.length} assigned products from API');
         update(); // Notify GetBuilder to rebuild
       } else {
         debugPrint('❌ Failed to load products: ${response.message}');
