@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_inventory/app/core/models/cart_item_model.dart';
+import 'package:qr_code_inventory/app/core/models/order_model.dart';
 import 'package:qr_code_inventory/app/core/services/cart_service.dart';
+import 'package:qr_code_inventory/app/core/services/order_service.dart';
+import 'package:qr_code_inventory/app/core/services/token_storage.dart';
 import 'package:qr_code_inventory/app/utils/navigation_utils.dart';
 
 class CartController extends GetxController {
   late final CartService _cartService;
+  late final OrderService _orderService;
+  late final TokenStorage _tokenStorage;
 
   final RxBool isSelectAll = false.obs;
   final RxBool showDeleteDialog = false.obs;
   final Rx<CartItem?> itemToDelete = Rx<CartItem?>(null);
+  final RxBool isProcessingCheckout = false.obs;
 
   // Getters that delegate to CartService
   List<CartItem> get cartItems => _cartService.cartItems;
@@ -20,7 +26,7 @@ class CartController extends GetxController {
   bool get hasSelectedItems => selectedItems.isNotEmpty;
 
   void onBackPressed() {
-    NavigationUtils.safeBack();
+    NavigationUtils.safeBackWithCleanup<CartController>();
   }
 
   void toggleSelectAll() {
@@ -116,7 +122,7 @@ class CartController extends GetxController {
     }
   }
 
-  void checkout() {
+  void checkout() async {
     if (!hasSelectedItems) {
       try {
         Get.snackbar(
@@ -133,17 +139,119 @@ class CartController extends GetxController {
       return;
     }
 
+    // Prevent multiple checkout attempts
+    if (isProcessingCheckout.value) {
+      debugPrint('⚠️ Checkout already in progress');
+      return;
+    }
+
     try {
-      Get.snackbar(
-        'Checkout',
-        'Proceeding to checkout with ${selectedItemsCount} items',
-        duration: const Duration(seconds: 2),
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green.withOpacity(0.1),
-        colorText: Colors.green,
+      isProcessingCheckout.value = true;
+
+      // Get the token
+      final token = _tokenStorage.getAccessToken();
+      if (token == null) {
+        Get.snackbar(
+          'Authentication Error',
+          'Please login to continue',
+          duration: const Duration(seconds: 2),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red.withOpacity(0.1),
+          colorText: Colors.red,
+        );
+        return;
+      }
+
+      debugPrint('🛒 Starting checkout process');
+      debugPrint('📦 Selected items: ${selectedItems.length}');
+      debugPrint('💰 Total amount: \$${totalAmount.toStringAsFixed(2)}');
+
+      // Convert cart items to order items
+      final orderItems = selectedItems.map((cartItem) {
+        return OrderItem(
+          productId: cartItem.productId,
+          quantity: cartItem.quantity,
+          price: cartItem.price,
+        );
+      }).toList();
+
+      // Create the order
+      final response = await _orderService.createOrder(
+        items: orderItems,
+        totalAmount: totalAmount,
+        token: token,
       );
+
+      if (response.success) {
+        debugPrint('✅ Order created successfully');
+
+        // Remove selected items from cart
+        final itemsToRemove = List<CartItem>.from(selectedItems);
+        for (var item in itemsToRemove) {
+          _cartService.removeFromCart(item.id);
+        }
+
+        _updateSelectAllState();
+
+        // Show success message using Get.rawSnackbar which is more reliable
+        Get.rawSnackbar(
+          title: '✅ Order Successful',
+          message: response.message.isNotEmpty
+              ? response.message
+              : 'Your order has been placed successfully!',
+          duration: const Duration(seconds: 3),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          borderRadius: 8,
+          margin: const EdgeInsets.all(16),
+          icon: const Icon(
+            Icons.check_circle_outline,
+            color: Colors.white,
+            size: 28,
+          ),
+          shouldIconPulse: false,
+          overlayBlur: 0,
+          isDismissible: true,
+        );
+      } else {
+        debugPrint('❌ Order failed: ${response.message}');
+
+        // Show error message
+        Get.rawSnackbar(
+          title: '❌ Order Failed',
+          message: response.message.isNotEmpty
+              ? response.message
+              : 'Failed to create order. Please try again.',
+          duration: const Duration(seconds: 3),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          borderRadius: 8,
+          margin: const EdgeInsets.all(16),
+          icon: const Icon(Icons.error_outline, color: Colors.white, size: 28),
+          shouldIconPulse: false,
+          overlayBlur: 0,
+          isDismissible: true,
+        );
+      }
     } catch (e) {
-      debugPrint('⚠️ Could not show checkout snackbar: $e');
+      debugPrint('❌ Error during checkout: $e');
+
+      // Show error message
+      Get.rawSnackbar(
+        title: '❌ Error',
+        message: 'An error occurred during checkout. Please try again.',
+        duration: const Duration(seconds: 3),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        borderRadius: 8,
+        margin: const EdgeInsets.all(16),
+        icon: const Icon(Icons.error_outline, color: Colors.white, size: 28),
+        shouldIconPulse: false,
+        overlayBlur: 0,
+        isDismissible: true,
+      );
+    } finally {
+      isProcessingCheckout.value = false;
     }
   }
 
@@ -154,6 +262,9 @@ class CartController extends GetxController {
     // Initialize services safely
     try {
       _cartService = Get.find<CartService>();
+      _orderService = Get.find<OrderService>();
+      _tokenStorage = Get.find<TokenStorage>();
+
       // Listen to cart changes and update select all state
       ever(_cartService.cartItems, (_) => _updateSelectAllState());
       _updateSelectAllState();

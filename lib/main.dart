@@ -12,8 +12,7 @@ void main() async {
   // Initialize GetStorage
   await GetStorage.init();
 
-  // Then initialize dependencies
-  InitialBinding().dependencies();
+  // Dependencies will be initialized by GetMaterialApp's initialBinding
   runApp(const MyApp());
 }
 

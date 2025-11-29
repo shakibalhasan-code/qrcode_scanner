@@ -10,6 +10,7 @@ class ReviewService {
   // Fetch all reviews for a product
   Future<GetReviewsResponse?> getProductReviews({
     required String productId,
+    required String token,
     int page = 1,
     int limit = 10,
   }) async {
@@ -18,20 +19,30 @@ class ReviewService {
         '${ApiEndpoints.getAllReviews}/$productId?page=$page&limit=$limit',
       );
 
+      debugPrint('🚀 ReviewService.getProductReviews() called');
+      debugPrint('🔗 URL: $url');
+      debugPrint('🔑 Token (first 20 chars): ${token.substring(0, 20)}...');
+
       final response = await http.get(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
       );
 
-      if (response.statusCode == 200) {
+      debugPrint('📊 Response Status: ${response.statusCode}');
+      debugPrint('📄 Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final data = json.decode(response.body);
         debugPrint(
-          'Reviews fetched successfully: ${data['data']['result'].length} reviews',
+          '✅ Reviews fetched successfully: ${data['data']['result'].length} reviews',
         );
         return GetReviewsResponse.fromJson(data);
       } else {
         final errorData = json.decode(response.body);
-        debugPrint('Failed to fetch reviews: $errorData');
+        debugPrint('❌ Failed to fetch reviews: $errorData');
         return null;
       }
     } catch (e) {

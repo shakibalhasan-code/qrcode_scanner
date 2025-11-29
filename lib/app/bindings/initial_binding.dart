@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:qr_code_inventory/app/bindings/auth_binding.dart';
 import 'package:qr_code_inventory/app/controllers/app_controller.dart';
 import 'package:qr_code_inventory/app/core/services/category_service.dart';
 import 'package:qr_code_inventory/app/core/services/product_service.dart';
@@ -8,14 +7,18 @@ import 'package:qr_code_inventory/app/core/services/user_service.dart';
 import 'package:qr_code_inventory/app/core/services/cart_service.dart';
 import 'package:qr_code_inventory/app/core/services/notification_service.dart';
 import 'package:qr_code_inventory/app/core/services/assign_product_service.dart';
+import 'package:qr_code_inventory/app/core/services/auth_service.dart';
+import 'package:qr_code_inventory/app/core/services/token_storage.dart';
+import 'package:qr_code_inventory/app/core/services/order_service.dart';
 import 'package:qr_code_inventory/app/views/main/dashboard/controller/dashboard_controller.dart';
 import 'package:qr_code_inventory/app/views/main/initial_step/controllers/initial_controller.dart';
 
 class InitialBinding implements Bindings {
   @override
   void dependencies() {
-    // Register AuthBinding
-    AuthBinding().dependencies();
+    // Initialize core auth services that should be available throughout the app
+    Get.put<TokenStorage>(TokenStorage(), permanent: true);
+    Get.put<AuthService>(AuthService(), permanent: true);
 
     // Controllers
     Get.lazyPut<AppController>(() => AppController(), fenix: true);
@@ -29,6 +32,7 @@ class InitialBinding implements Bindings {
     Get.lazyPut<UserService>(() => UserService(), fenix: true);
     Get.lazyPut<CartService>(() => CartService(), fenix: true);
     Get.lazyPut<NotificationService>(() => NotificationService(), fenix: true);
+    Get.lazyPut<OrderService>(() => OrderService(), fenix: true);
     Get.lazyPut<AssignProductService>(
       () => AssignProductService(),
       fenix: true,

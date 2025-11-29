@@ -47,6 +47,9 @@ class ApiEndpoints {
   static const String getAllAssignProducts =
       '$baseUrl/assign-product/get-all-assign-product';
 
+  // Order Endpoints
+  static const String createOrder = '$baseUrl/order/create-order';
+
   // Image Base URL (use this for constructing image URLs)
   static const String imageBaseUrl = 'http://10.10.12.25:5008';
 

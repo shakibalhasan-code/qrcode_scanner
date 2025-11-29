@@ -116,6 +116,6 @@ class CategoriesController extends GetxController {
   }
 
   void onBackPressed() {
-    NavigationUtils.safeBack();
+    NavigationUtils.safeBackWithCleanup<CategoriesController>();
   }
 }

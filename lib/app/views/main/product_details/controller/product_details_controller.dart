@@ -263,8 +263,21 @@ class ProductDetailsController extends GetxController {
         hasMoreReviews.value = true;
       }
 
+      // Get the token
+      final token = _tokenStorage.getAccessToken();
+      if (token == null) {
+        debugPrint('❌ No token available for fetching reviews');
+        hasMoreReviews.value = false;
+        return;
+      }
+
+      debugPrint(
+        '🔑 Token retrieved for reviews: ${token.substring(0, 20)}...',
+      );
+
       final response = await _reviewService.getProductReviews(
         productId: productId!,
+        token: token,
         page: reviewsPage.value,
         limit: reviewsLimit.value,
       );
@@ -474,7 +487,7 @@ class ProductDetailsController extends GetxController {
   }
 
   void onBackPressed() {
-    NavigationUtils.safeBack();
+    NavigationUtils.safeBackWithCleanup<ProductDetailsController>();
   }
 
   void shareProduct() {
